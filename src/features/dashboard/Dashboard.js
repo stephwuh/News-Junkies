@@ -3,14 +3,21 @@ import axios from 'axios';
 
 const Dashboard = () => {
 
-    const [newsState, setNewsState] = useState(null);
+    const [searchState, setSearchState] = useState(null);
+    const [headlineState, setHeadlineState] = useState(null);
 
     useEffect(()=>{
 
         const getNewsAPI = async () => {
             try {
-                const response = axios.get('http://localhost:5050/api/getNews');
-                console.log(response);                
+                const response = await axios.get('http://localhost:5050/api/getSearch');                
+                setSearchState(response.data);
+
+                const response2 = await axios.get('http://localhost:5050/api/getHeadlines')
+                setHeadlineState(response2.data.articles);
+
+                console.log(response2.data.articles)
+                
             } catch (error) {
                 console.log(error)
             }
@@ -21,9 +28,21 @@ const Dashboard = () => {
 
     },[])
 
+    const headlineItems = headlineState.map((headline, index)=>{
+        return(
+            <li key={index}>
+                {headline.title}
+            </li>
+        )
+    })
 
     return(
-        <div>Hello World</div>
+        <div>
+            {headlineItems && 
+                <ul>{headlineItems}</ul>
+            }
+
+        </div>
     )
 
 }
