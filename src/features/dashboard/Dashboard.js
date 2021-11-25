@@ -4,7 +4,7 @@ import axios from 'axios';
 const Dashboard = () => {
 
     const [searchState, setSearchState] = useState(null);
-    const [headlineState, setHeadlineState] = useState(null);
+    const [headlineState, setHeadlineState] = useState([]);
 
     useEffect(()=>{
 
@@ -16,7 +16,7 @@ const Dashboard = () => {
                 const response2 = await axios.get('http://localhost:5050/api/getHeadlines')
                 setHeadlineState(response2.data.articles);
 
-                console.log(response2.data.articles)
+                // console.log(response2.data.articles)
                 
             } catch (error) {
                 console.log(error)

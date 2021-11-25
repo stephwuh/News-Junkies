@@ -3,7 +3,7 @@ require('dotenv').config();
 const cors = require('cors');
 const axios = require('axios');
 const app = express();
-
+const connect = require('.././database/database.js')
 
 
 app.use(cors());
@@ -38,6 +38,8 @@ app.get('/api/getHeadlines', async (req, res)=>{
         res.status(502).send('Issue with third party api');
     }
 })
+
+connect();
 
 const port = process.env.PORT || 5050;
 
