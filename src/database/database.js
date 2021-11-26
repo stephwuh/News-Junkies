@@ -2,6 +2,10 @@ const Sequelize = require('sequelize');
 
 const connection = require('./sequelizeConfig.js');
 
+// const News = require('./models/news.js');
+
+
+
 
 //sync method turns our models into tables in sql database
 module.exports = connect = ()=>{
