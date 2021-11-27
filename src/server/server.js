@@ -5,6 +5,8 @@ const axios = require('axios');
 const app = express();
 const connect = require('.././database/database.js')
 
+const news = require('.././database/models/news.js');
+
 
 app.use(cors());
 
@@ -37,6 +39,21 @@ app.get('/api/getHeadlines', async (req, res)=>{
     } catch (error) {
         res.status(502).send('Issue with third party api');
     }
+})
+
+app.post('/api/postNews', async(req, res) => {
+    // const {source, rating, number, type} = req.body;
+
+    console.log(req.body)
+
+    await news.create({
+        id: id,
+        source: source,
+        rating: rating,
+        number: number,
+        type: type
+      });
+      res.status(200).send('upload successful');
 })
 
 connect();
