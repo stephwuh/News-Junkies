@@ -9,6 +9,7 @@ const news = require('.././database/models/news.js');
 
 
 app.use(cors());
+app.use(express.json())
 
 app.get('/api/getSearch/', async (_req, res)=>{
 
@@ -41,18 +42,12 @@ app.get('/api/getHeadlines', async (req, res)=>{
     }
 })
 
-app.post('/api/postNews', async(req, res) => {
-    // const {source, rating, number, type} = req.body;
+app.get('/api/getBias', async(req, res) => {
 
-    console.log(req.body)
+    let source = await news.findOne({where: {source: 'AARP'}});
 
-    await news.create({
-        id: id,
-        source: source,
-        rating: rating,
-        number: number,
-        type: type
-      });
+    console.log(source)
+
       res.status(200).send('upload successful');
 })
 

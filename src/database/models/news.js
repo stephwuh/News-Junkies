@@ -2,12 +2,13 @@ const Sequelize = require("sequelize");
 const connection = require('.././sequelizeConfig.js');
 
 const news = connection.define('news', {
-    id: {
-        type: Sequelize.INTEGER,
-        field: 'id',
-        primaryKey: true,
-        // allowNull: false
-      },
+    // id: {
+    //     type: Sequelize.INTEGER,
+    //     field: 'id',
+    //     primaryKey: true,
+    //     autoIncrement: true
+    //     // allowNull: false
+    //   },
     source: {
       type: Sequelize.STRING,
       field: 'source',
@@ -27,9 +28,12 @@ const news = connection.define('news', {
       type: Sequelize.STRING,
       field: 'type',
       // allowNull: false
-    }
+    },
+    // createdAt: Sequelize.DATE,
+    // updatedAt: Sequelize.DATE,
 }, {
-    tableName: 'news'
+    tableName: 'news',
+    timestamps: false
 })
 
 module.exports = news;

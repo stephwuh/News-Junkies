@@ -6,7 +6,6 @@ const Dashboard = () => {
     const [searchState, setSearchState] = useState(null);
     const [headlineState, setHeadlineState] = useState([]);
 
-    
 
     useEffect(()=>{
 
@@ -18,9 +17,7 @@ const Dashboard = () => {
                 const response2 = await axios.get('http://localhost:5050/api/getHeadlines')
                 setHeadlineState(response2.data.articles);
 
-                // console.log(response2.data.articles)
-
-                axios.post('http://localhost:5050/api/postNews', {id: '548', source: 'stephen', rating: 'center', number:'1', type:'stephen'})
+                await axios.get('http://localhost:5050/api/getBias')
                 
             } catch (error) {
                 console.log(error)
