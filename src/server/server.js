@@ -42,13 +42,47 @@ app.get('/api/getHeadlines', async (req, res)=>{
     }
 })
 
-app.get('/api/getBias', async(req, res) => {
+app.get('/api/getSources', async(_req, res) => {
 
-    let source = await news.findOne({where: {source: 'AARP'}});
+    try {
+        const query = await news.findAll(); 
 
-    console.log(source)
+        // console.log(query);
+        
+        let left=[];
+        let leftCenter=[];
+        let center=[];
+        let rightCenter=[];
+        let right=[];
 
-      res.status(200).send('upload successful');
+        for(let i=0; i<query.length; i++){
+
+            if(query[i].dataValues.rating === "left"){
+                left.push(query[i].dataValues);
+            } else if(query[i].dataValues.rating === "left-center"){
+                leftCenter.push(query[i].dataValues);
+            } else if(query[i].dataValues.rating === "center"){
+                center.push(query[i].dataValues);
+            } else if(query[i].dataValues.rating === "right-center"){
+                rightCenter.push(query[i].dataValues);
+            } else if(query[i].dataValues.rating === "right"){
+                right.push(query[i].dataValues);
+            }
+            
+        }
+
+        // console.log(left)
+        // console.log(leftCenter)
+        // console.log(center)
+        // console.log(rightCenter)
+        // console.log(right)
+
+        res.status(200).send({left, leftCenter, center, rightCenter, right } );
+
+    } catch (error) {
+        res.status(500).send('database error');
+    }
+    
 })
 
 connect();

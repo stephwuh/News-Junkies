@@ -17,7 +17,6 @@ const Dashboard = () => {
                 const response2 = await axios.get('http://localhost:5050/api/getHeadlines')
                 setHeadlineState(response2.data.articles);
 
-                await axios.get('http://localhost:5050/api/getBias')
                 
             } catch (error) {
                 console.log(error)
