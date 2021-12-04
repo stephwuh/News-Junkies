@@ -1,11 +1,11 @@
 
 const Sequelize = require("sequelize");
-const connection = require('.././database.js');
+const connection = require('.././sequelizeConfig.js');
 
 const UserSource = connection.define('UserSource', {
-    source: {
-      type: Sequelize.STRING,
-    }
+    // source: {
+    //   type: Sequelize.STRING,
+    // }
 }, {
     timestamps: false
 })

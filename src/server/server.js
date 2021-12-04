@@ -7,7 +7,7 @@ const connect = require('.././database/database.js')
 
 const news = require('.././database/models/news.js');
 
-const userSource = require('.././database/models/userSource.js');
+const UserSource = require('.././database/models/userSource.js');
 
 
 app.use(cors());
@@ -84,11 +84,12 @@ app.get('/api/getSources', async(_req, res) => {
 
 app.post('/api/postUserSource', async (req, res)=>{
 
-    const {left, leftCenter, center, rightCenter, right} = req.body;
+    const newsId = req.body;
 
     try {
 
-        
+        await UserSource.setUserSources(newsId)
+
         
     } catch (error) {
         

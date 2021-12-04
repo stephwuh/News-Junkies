@@ -2,9 +2,11 @@ const Sequelize = require('sequelize');
 
 const connection = require('./sequelizeConfig.js');
 
-// const News = require('./models/news.js');
+const News = require('./models/news.js');
+const UserSource = require('./models/userSource.js');
 
 
+UserSource.belongsTo(News);
 
 
 //sync method turns our models into tables in sql database

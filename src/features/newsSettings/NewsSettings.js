@@ -12,7 +12,6 @@ import "../.././App.css";
 import NewsList from "./NewsList";
 
 const NewsSettings = () => {
-
   const [sourceState, setSourceState] = useState([]);
 
   const [leftState, setLeftState] = useState([]);
@@ -32,19 +31,28 @@ const NewsSettings = () => {
   }, []);
 
   const handleSubmitButtonOnClick = async (e) => {
-
     e.preventDefault();
 
-    const userSource = {
-        left : leftState,
-        leftCenter : leftCenterState,
-        center: centerState,
-        rightCenter : rightCenterState,
-        right : rightState
+    const userSource = [
+      ...leftState,
+      ...leftCenterState,
+      ...centerState,
+      ...rightCenterState,
+      ...rightState,
+    ];
+
+    try {
+      //check for server error/success message
+
+      await axios.post("http://localhost:5050/api/postUserSource", userSource);
+
+      alert("Updated Successfully!");
+
+      //clear check marks 
+
+    } catch (error) {
+      alert("Something went wrong :( ");
     }
-
-    await axios.post('/api/postUserSource', userSource )
-
   };
 
   const handleLeftOnChange = (e) => {
