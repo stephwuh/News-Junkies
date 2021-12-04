@@ -7,6 +7,8 @@ const connect = require('.././database/database.js')
 
 const news = require('.././database/models/news.js');
 
+const userSource = require('.././database/models/userSource.js');
+
 
 app.use(cors());
 app.use(express.json())
@@ -71,11 +73,6 @@ app.get('/api/getSources', async(_req, res) => {
             
         }
 
-        // console.log(left)
-        // console.log(leftCenter)
-        // console.log(center)
-        // console.log(rightCenter)
-        // console.log(right)
 
         res.status(200).send({left, leftCenter, center, rightCenter, right } );
 
@@ -83,6 +80,20 @@ app.get('/api/getSources', async(_req, res) => {
         res.status(500).send('database error');
     }
     
+})
+
+app.post('/api/postUserSource', async (req, res)=>{
+
+    const {left, leftCenter, center, rightCenter, right} = req.body;
+
+    try {
+
+        
+        
+    } catch (error) {
+        
+    }
+
 })
 
 connect();

@@ -1,21 +1,30 @@
 import React from 'react';
 
+import Col from "react-bootstrap/Col";
+import Form from "react-bootstrap/Form";
+
 const NewsList = (props) =>{
 
     
     return(
-        <div className={props.type}>
+        <Col className={props.type}>
           <h3>{props.type}</h3>
           {props.list &&
             props.list.map((source, index) => {
               return (
                 <div key={index}>
-                  <input type="checkbox" id={source.source} />
-                  <label for={source.source}>{source.source}</label>
+                    
+                    <Form.Check
+                        type="checkbox" 
+                        label={source.source}
+                        onChange={props.onChange}
+                        value={source.source}
+                    />
+
                 </div>
               );
             })}
-        </div>
+        </Col>
     );
 };
 
