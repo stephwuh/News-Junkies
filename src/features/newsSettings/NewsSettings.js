@@ -41,6 +41,8 @@ const NewsSettings = () => {
       ...rightState,
     ];
 
+    console.log(userSource)
+
     try {
       //check for server error/success message
 
@@ -57,7 +59,8 @@ const NewsSettings = () => {
 
   const handleLeftOnChange = (e) => {
     if (e.target.checked) {
-      setLeftState([...leftState, e.target.value]);
+      
+      setLeftState([...leftState, {newsId: +e.target.value}]);
     } else {
       setLeftState(leftState.filter((source) => source !== e.target.value));
     }
@@ -65,7 +68,7 @@ const NewsSettings = () => {
 
   const handleLeftCenterOnChange = (e) => {
     if (e.target.checked) {
-      setLeftCenterState([...leftCenterState, e.target.value]);
+      setLeftCenterState([...leftCenterState, {newsId: +e.target.value}]);
     } else {
       setLeftCenterState(
         leftCenterState.filter((source) => source !== e.target.value)
@@ -75,7 +78,7 @@ const NewsSettings = () => {
 
   const handleCenterOnChange = (e) => {
     if (e.target.checked) {
-      setCenterState([...centerState, e.target.value]);
+      setCenterState([...centerState, {newsId: +e.target.value}]);
     } else {
       setCenterState(centerState.filter((source) => source !== e.target.value));
     }
@@ -83,7 +86,7 @@ const NewsSettings = () => {
 
   const handleRightCenterOnChange = (e) => {
     if (e.target.checked) {
-      setRightCenterState([...rightCenterState, e.target.value]);
+      setRightCenterState([...rightCenterState, {newsId: +e.target.value}]);
     } else {
       setRightCenterState(
         rightCenterState.filter((source) => source !== e.target.value)
@@ -93,7 +96,7 @@ const NewsSettings = () => {
 
   const handleRightOnChange = (e) => {
     if (e.target.checked) {
-      setRightState([...rightState, e.target.value]);
+      setRightState([...rightState, {newsId: +e.target.value}]);
     } else {
       setRightState(rightState.filter((source) => source !== e.target.value));
     }

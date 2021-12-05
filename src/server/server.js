@@ -86,9 +86,11 @@ app.post('/api/postUserSource', async (req, res)=>{
 
     const newsId = req.body;
 
+    console.log(newsId)
+
     try {
 
-        await UserSource.setUserSources(newsId)
+        await UserSource.bulkCreate(newsId, {returning: true});
 
         
     } catch (error) {
