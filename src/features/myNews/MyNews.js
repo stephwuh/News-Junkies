@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 
-const Dashboard = () => {
+const MyNews = () => {
 
     const [searchState, setSearchState] = useState(null);
     const [headlineState, setHeadlineState] = useState([]);
@@ -47,4 +47,4 @@ const Dashboard = () => {
 
 }
 
-export default Dashboard;
+export default MyNews;

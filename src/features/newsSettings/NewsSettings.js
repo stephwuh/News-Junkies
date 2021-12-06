@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import {useNavigate} from 'react-router-dom';
 
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
@@ -20,8 +21,11 @@ const NewsSettings = () => {
   const [rightCenterState, setRightCenterState] = useState([]);
   const [rightState, setRightState] = useState([]);
 
+  let navigate = useNavigate();
+
   useEffect(() => {
     const getSources = async () => {
+
       const response = await axios.get("http://localhost:5050/api/getSources");
 
       setSourceState(response.data);
@@ -41,20 +45,24 @@ const NewsSettings = () => {
       ...rightState,
     ];
 
-    console.log(userSource)
 
     try {
       //check for server error/success message
 
-      await axios.post("http://localhost:5050/api/postUserSource", userSource);
+      axios.post("http://localhost:5050/api/postUserSource", userSource)
 
       alert("Updated Successfully!");
+
+      navigate('/my-news');
 
       //clear check marks 
 
     } catch (error) {
       alert("Something went wrong :( ");
     }
+
+    
+
   };
 
   const handleLeftOnChange = (e) => {

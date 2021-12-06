@@ -1,13 +1,19 @@
 
 import './App.css';
-import Dashboard from './features/dashboard/Dashboard'
-import NewsSettings from './features/newsSettings/NewsSettings';
+
+import NewsSettings from './features/newsSettings/NewsSettings.js';
+import MyNews from './features/myNews/MyNews.js';
+
+import {Routes, Route} from 'react-router-dom'; 
 
 
 function App() {
   return (
     <div>
-      <NewsSettings />
+      <Routes>
+        <Route path='/settings' element={<NewsSettings/>}/>
+        <Route path='/my-news' element={<MyNews/>} />
+      </Routes>
     </div>
   );
 }
