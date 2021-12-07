@@ -9,6 +9,9 @@ const news = require('.././database/models/news.js');
 
 const UserSource = require('.././database/models/userSource.js');
 
+const sequelize = require('.././database/sequelizeConfig')
+
+const { QueryTypes } = require('sequelize');
 
 app.use(cors());
 app.use(express.json())
@@ -18,30 +21,14 @@ app.get('/api/getSearch/', async (_req, res)=>{
     const searchTerm = 'booster shots'
 
     try {
-        const response = await axios.get(`https://newsapi.org/v2/everything?q=${searchTerm}&apiKey=${process.env.NEWSAPI_KEY}`);
+        // const response = await axios.get(`https://newsapi.org/v2/everything?q=${searchTerm}&apiKey=${process.env.NEWSAPI_KEY}`);
 
-        res.send(response.data);
-
-    } catch (error) {
-        res.status(502).send('Issue with third party api');
-    }
-
-})
-
-app.get('/api/getHeadlines', async (req, res)=>{
-
-    const country = 'us'
-
-    try {
-
-        const response = await axios.get(`https://newsapi.org/v2/top-headlines?country=${country}&apiKey=${process.env.NEWSAPI_KEY}`);
-
-        res.send(response.data);
-
+        // res.send(response.data);
 
     } catch (error) {
         res.status(502).send('Issue with third party api');
     }
+
 })
 
 app.get('/api/getSources', async(_req, res) => {
@@ -86,8 +73,6 @@ app.post('/api/postUserSource', async (req, res)=>{
 
     const newsId = req.body;
 
-    console.log(newsId)
-
     try {
 
         await UserSource.bulkCreate(newsId, {returning: true});
@@ -98,6 +83,50 @@ app.post('/api/postUserSource', async (req, res)=>{
     }
 
 })
+
+app.get('/api/getHeadlines', async (req, res)=>{
+
+
+    try {
+
+        let userSource = [];
+
+        const query = await UserSource.findAll({include: news});
+
+        // console.log(query[0].news.dataValues.source)
+
+        
+
+        for (let i=0; i < query.length; i++){
+            userSource.push(query[i].news.dataValues.source)
+        }
+
+        console.log(userSource)
+
+        // const query = await sequelize.query("SELECT * FROM news", { type: QueryTypes.SELECT })
+
+        // console.log(query)
+
+
+
+    } catch (error) {
+        
+    }
+
+    // const country = 'us'
+
+    // try {
+
+    //     const response = await axios.get(`https://newsapi.org/v2/top-headlines?country=${country}&apiKey=${process.env.NEWSAPI_KEY}`);
+
+    //     res.send(response.data);
+
+
+    // } catch (error) {
+    //     res.status(502).send('Issue with third party api');
+    // }
+})
+
 
 connect();
 

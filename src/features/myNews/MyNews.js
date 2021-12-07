@@ -11,11 +11,11 @@ const MyNews = () => {
 
         const getNewsAPI = async () => {
             try {
-                const response = await axios.get('http://localhost:5050/api/getSearch');                
-                setSearchState(response.data);
+                // const response = await axios.get('http://localhost:5050/api/getSearch');                
+                // setSearchState(response.data);
 
                 const response2 = await axios.get('http://localhost:5050/api/getHeadlines')
-                setHeadlineState(response2.data.articles);
+                // setHeadlineState(response2.data.articles);
 
                 
             } catch (error) {
