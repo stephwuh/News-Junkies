@@ -11,7 +11,10 @@ const UserSource = require('.././database/models/userSource.js');
 
 const sequelize = require('.././database/sequelizeConfig')
 
-const { QueryTypes } = require('sequelize');
+const NewsAPI = require('newsapi');
+
+const newsapi = new NewsAPI('ff88b865f6204634b0276875d1dac794');
+
 
 app.use(cors());
 app.use(express.json())
@@ -86,16 +89,11 @@ app.post('/api/postUserSource', async (req, res)=>{
 
 app.get('/api/getHeadlines', async (req, res)=>{
 
-
     try {
 
         let userSource = [];
 
         const query = await UserSource.findAll({include: news});
-
-        // console.log(query[0].news.dataValues.source)
-
-        
 
         for (let i=0; i < query.length; i++){
             userSource.push(query[i].news.dataValues.source)
@@ -103,10 +101,19 @@ app.get('/api/getHeadlines', async (req, res)=>{
 
         console.log(userSource)
 
-        // const query = await sequelize.query("SELECT * FROM news", { type: QueryTypes.SELECT })
+        const string = userSource.join(',')
 
-        // console.log(query)
+        console.log(string)
 
+        const headLines = await newsapi.v2.topHeadlines({
+            sources: 'The-Daily-Wire',
+            // q: 'bitcoin',
+            // category: 'business',
+            language: 'en',
+            // country: 'us'
+          })
+
+        console.log(headLines)
 
 
     } catch (error) {
