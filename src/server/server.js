@@ -105,13 +105,31 @@ app.get('/api/getHeadlines', async (req, res)=>{
 
         console.log(string)
 
-        const headLines = await newsapi.v2.topHeadlines({
-            sources: 'The-Daily-Wire',
+        // const headLines = await axios.get(`https://newsapi.org/v2/top-headlines?country=us&apiKey=ff88b865f6204634b0276875d1dac794`)
+
+        const headLines = newsapi.v2.topHeadlines({
+            sources: 'time',
             // q: 'bitcoin',
             // category: 'business',
             language: 'en',
             // country: 'us'
           })
+
+        //   const headLines = await newsapi.v2.everything({
+        //     // sources: 'ABC-News',
+        //     // q: 'cspan',
+        //     domains: 'www.ap.org',
+        //     // category: 'business',
+        //     language: 'en',
+        //     // country: 'us'
+        //   })
+
+        // const headLines = await newsapi.v2.sources({
+        //     // category: 'technology',
+        //     name:"New York Times",
+        //     language: 'en',
+        //     // country: 'us'
+        //   })
 
         console.log(headLines)
 
