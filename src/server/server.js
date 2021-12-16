@@ -38,33 +38,34 @@ app.get('/api/getSources', async(_req, res) => {
 
     try {
         const query = await news.findAll(); 
-
-        // console.log(query);
         
-        let left=[];
-        let leftCenter=[];
-        let center=[];
-        let rightCenter=[];
-        let right=[];
 
-        for(let i=0; i<query.length; i++){
+        console.log(query);
+        
+        // let left=[];
+        // let leftCenter=[];
+        // let center=[];
+        // let rightCenter=[];
+        // let right=[];
 
-            if(query[i].dataValues.rating === "left"){
-                left.push(query[i].dataValues);
-            } else if(query[i].dataValues.rating === "left-center"){
-                leftCenter.push(query[i].dataValues);
-            } else if(query[i].dataValues.rating === "center"){
-                center.push(query[i].dataValues);
-            } else if(query[i].dataValues.rating === "right-center"){
-                rightCenter.push(query[i].dataValues);
-            } else if(query[i].dataValues.rating === "right"){
-                right.push(query[i].dataValues);
-            }
+        // for(let i=0; i<query.length; i++){
+
+        //     if(query[i].dataValues.rating === "left"){
+        //         left.push(query[i].dataValues);
+        //     } else if(query[i].dataValues.rating === "left-center"){
+        //         leftCenter.push(query[i].dataValues);
+        //     } else if(query[i].dataValues.rating === "center"){
+        //         center.push(query[i].dataValues);
+        //     } else if(query[i].dataValues.rating === "right-center"){
+        //         rightCenter.push(query[i].dataValues);
+        //     } else if(query[i].dataValues.rating === "right"){
+        //         right.push(query[i].dataValues);
+        //     }
             
-        }
+        // }
 
 
-        res.status(200).send({left, leftCenter, center, rightCenter, right } );
+        // res.status(200).send({left, leftCenter, center, rightCenter, right } );
 
     } catch (error) {
         res.status(500).send('database error');
@@ -72,48 +73,48 @@ app.get('/api/getSources', async(_req, res) => {
     
 })
 
-app.post('/api/postUserSource', async (req, res)=>{
+// app.post('/api/postUserSource', async (req, res)=>{
 
-    const newsId = req.body;
+//     const newsId = req.body;
 
-    try {
+//     try {
 
-        await UserSource.bulkCreate(newsId, {returning: true});
+//         await UserSource.bulkCreate(newsId, {returning: true});
 
         
-    } catch (error) {
+//     } catch (error) {
         
-    }
+//     }
 
-})
+// })
 
 app.get('/api/getHeadlines', async (req, res)=>{
 
-    try {
+    // try {
 
-        let userSource = [];
+    //     let userSource = [];
 
-        const query = await UserSource.findAll({include: news});
+    //     const query = await UserSource.findAll({include: news});
 
-        for (let i=0; i < query.length; i++){
-            userSource.push(query[i].news.dataValues.source)
-        }
+    //     for (let i=0; i < query.length; i++){
+    //         userSource.push(query[i].news.dataValues.source)
+    //     }
 
-        console.log(userSource)
+    //     console.log(userSource)
 
-        const string = userSource.join(',')
+    //     const string = userSource.join(',')
 
-        console.log(string)
+    //     console.log(string)
 
         // const headLines = await axios.get(`https://newsapi.org/v2/top-headlines?country=us&apiKey=ff88b865f6204634b0276875d1dac794`)
 
-        const headLines = newsapi.v2.topHeadlines({
-            sources: 'time',
-            // q: 'bitcoin',
-            // category: 'business',
-            language: 'en',
-            // country: 'us'
-          })
+        // const headLines = newsapi.v2.topHeadlines({
+        //     sources: 'time',
+        //     // q: 'bitcoin',
+        //     // category: 'business',
+        //     language: 'en',
+        //     // country: 'us'
+        //   })
 
         //   const headLines = await newsapi.v2.everything({
         //     // sources: 'ABC-News',
@@ -131,12 +132,12 @@ app.get('/api/getHeadlines', async (req, res)=>{
         //     // country: 'us'
         //   })
 
-        console.log(headLines)
+    //     console.log(headLines)
 
 
-    } catch (error) {
+    // } catch (error) {
         
-    }
+    // }
 
     // const country = 'us'
 

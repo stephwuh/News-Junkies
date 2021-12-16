@@ -6,7 +6,7 @@ const News = require('./models/news.js');
 const UserSource = require('./models/userSource.js');
 
 
-UserSource.belongsTo(News);
+UserSource.belongsTo(News); 
 
 
 //sync method turns our models into tables in sql database

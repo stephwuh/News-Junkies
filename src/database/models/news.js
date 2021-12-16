@@ -1,14 +1,14 @@
-const Sequelize = require("sequelize");
+const {Sequelize, DataTypes} = require("sequelize");
 const connection = require('.././sequelizeConfig.js');
 
 const news = connection.define('news', {
-    // id: {
-    //     type: Sequelize.INTEGER,
-    //     field: 'id',
-    //     primaryKey: true,
-    //     autoIncrement: true
-    //     // allowNull: false
-    //   },
+    id: {
+        type: Sequelize.INTEGER,
+        field: 'id',
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false
+      },
     source: {
       type: Sequelize.STRING,
       field: 'source',
@@ -29,6 +29,17 @@ const news = connection.define('news', {
       field: 'type',
       // allowNull: false
     },
+    searchTerm: {
+      type: DataTypes.STRING,
+      field: 'search_term',
+      // allowNull: false
+    },  
+    url: {
+      type: DataTypes.STRING,
+      field: 'url',
+      // allowNull: false
+    },
+    
     // createdAt: Sequelize.DATE,
     // updatedAt: Sequelize.DATE,
 }, {
