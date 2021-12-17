@@ -14,7 +14,7 @@ const MyNews = () => {
                 // const response = await axios.get('http://localhost:5050/api/getSearch');                
                 // setSearchState(response.data);
 
-                const response2 = await axios.get('http://localhost:5050/api/getHeadlines')
+                const response = await axios.get('http://localhost:5050/api/my-news')
                 // setHeadlineState(response2.data.articles);
 
                 

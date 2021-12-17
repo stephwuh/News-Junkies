@@ -45,11 +45,15 @@ const NewsSettings = () => {
       ...rightState,
     ];
 
+    // console.log(userSource)
+
 
     try {
       //check for server error/success message
 
-      axios.post("http://localhost:5050/api/postUserSource", userSource)
+      const response = await axios.post("http://localhost:5050/api/postUserSource", userSource)
+
+      console.log(response.data)
 
       alert("Updated Successfully!");
 
