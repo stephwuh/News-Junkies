@@ -34,15 +34,15 @@ const MyNews = () => {
                 {headline.title}
             </li>
         )
-    })
+        })
 
-    return(
-        <div>
-            {headlineItems && 
-                <ul>{headlineItems}</ul>
-            }
+        return(
+            <div>
+                {headlineItems && 
+                    <ul>{headlineItems}</ul>
+                }
 
-        </div>
+            </div>
     )
 
 }

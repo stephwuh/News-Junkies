@@ -60,17 +60,24 @@ app.get("/api/getSources", async (_req, res) => {
 });
 
 app.post("/api/postUserSource", async (req, res) => {
-  const newsId = req.body;
 
-  // console.log(req.body)
+  const newsId = req.body;
 
   try {
 
-    const response = await UserSource.bulkCreate(newsId);
+    await UserSource.bulkCreate(newsId, {returning: true})
 
-    res.status(200).send(response)
+    res.status(200).send("updated successfully");
 
-  } catch (error) {}
+  } catch (error) {
+    res.status(500).send("database error");  
+  }
+
+
+
+
+
+
 });
 
 
@@ -86,7 +93,7 @@ app.get("/api/my-news", async (req, res) => {
 
     query = await UserSource.findAll({ include: news });
 
-    // console.log(query)
+    console.log(query)
 
 
 
@@ -94,7 +101,10 @@ app.get("/api/my-news", async (req, res) => {
 
     if(query[i].news.dataValues.searchTerm){
         // searchTerm[0].searchTerm.push(query[i].news.dataValues.searchTerm)
+        
         sources += query[i].news.dataValues.searchTerm + ","
+
+
 
     } else {
       // searchTerm[1].url.push(query[i].news.dataValues.url)
@@ -108,14 +118,16 @@ app.get("/api/my-news", async (req, res) => {
   console.log(sources)
   console.log(domains)
 
-  // const headLines = await newsapi.v2.everything({
-  //   // sources: 'ABC-News',
-  //   // q: 'cspan',
-  //   domains: 'www.ap.org',
-  //   // category: 'business',
-  //   language: 'en',
-  //   // country: 'us'
-  // })
+  const headLines = await newsapi.v2.everything({
+    sources: sources,
+    // q: 'cspan',
+    domains: domains,
+    // category: 'business',
+    language: 'en',
+    // country: 'us'
+  })
+
+  console.log(headLines)
 
 
   // try {

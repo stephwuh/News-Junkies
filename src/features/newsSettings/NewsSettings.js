@@ -35,6 +35,7 @@ const NewsSettings = () => {
   }, []);
 
   const handleSubmitButtonOnClick = async (e) => {
+
     e.preventDefault();
 
     const userSource = [
@@ -48,23 +49,27 @@ const NewsSettings = () => {
     // console.log(userSource)
 
 
-    try {
+
       //check for server error/success message
 
-      const response = await axios.post("http://localhost:5050/api/postUserSource", userSource)
+      try {
+        await axios.post("http://localhost:5050/api/postUserSource", userSource
+        )
 
-      console.log(response.data)
+        alert("Updated Successfully!");
 
-      alert("Updated Successfully!");
+        navigate('/my-news');
+          
+      } catch (error) {
+        alert("Something went wrong!");
+      }
 
-      navigate('/my-news');
 
+    
       //clear check marks 
 
-    } catch (error) {
-      alert("Something went wrong :( ");
-    }
 
+    
     
 
   };
