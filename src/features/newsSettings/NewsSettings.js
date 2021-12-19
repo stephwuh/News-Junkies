@@ -46,7 +46,7 @@ const NewsSettings = () => {
       ...rightState,
     ];
 
-    // console.log(userSource)
+    console.log(userSource)
 
 
 

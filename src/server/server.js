@@ -60,74 +60,85 @@ app.get("/api/getSources", async (_req, res) => {
 });
 
 app.post("/api/postUserSource", async (req, res) => {
-
   const newsId = req.body;
 
+  console.log(req.body);
+
   try {
+    let response = await UserSource.bulkCreate(newsId, { returning: true });
 
-    await UserSource.bulkCreate(newsId, {returning: true})
-
-    res.status(200).send("updated successfully");
-
+    res.status(200).send("updated successfully  ");
   } catch (error) {
-    res.status(500).send("database error");  
+    res.status(500).send("database error");
   }
-
-
-
-
-
-
 });
 
-
-
 app.get("/api/my-news", async (req, res) => {
-
   // const searchTerm = [{ searchTerm: [] }, { url: [] }];
 
   let query;
-  let sources = "", domains=""
+  let sources = "",
+    domains = "";
 
-
-
+  try {
     query = await UserSource.findAll({ include: news });
+  } catch (error) {
+    res.status(500).send("database error");
+  }
 
-    console.log(query)
-
-
+  // console.log(query)
 
   for (let i = 0; i < query.length; i++) {
+    if (query[i].news.dataValues.searchTerm) {
+      // searchTerm[0].searchTerm.push(query[i].news.dataValues.searchTerm)
 
-    if(query[i].news.dataValues.searchTerm){
-        // searchTerm[0].searchTerm.push(query[i].news.dataValues.searchTerm)
-        
-        sources += query[i].news.dataValues.searchTerm + ","
-
-
-
+      sources += query[i].news.dataValues.searchTerm + ",";
     } else {
       // searchTerm[1].url.push(query[i].news.dataValues.url)
 
-      domains += query[i].news.dataValues.url + ","
-
+      domains += query[i].news.dataValues.url + ",";
     }
-
   }
 
   console.log(sources)
   console.log(domains)
 
-  const headLines = await newsapi.v2.everything({
-    sources: sources,
-    // q: 'cspan',
-    domains: domains,
-    // category: 'business',
-    language: 'en',
-    // country: 'us'
-  })
+  let headLines;
 
-  console.log(headLines)
+  try {
+    headLines = await newsapi.v2.everything({
+      sources: sources,
+      // q: 'cspan',
+      domains: domains,
+      // category: 'business',
+      language: "en",
+      // country: 'us'
+    });
+  } catch (error) {
+    res.status(500).send("Issue with News Api");
+  }
+
+  let headLinesArr = [...headLines.articles];
+
+  // console.log(headLinesArr)
+
+  let sortedHeadLinesObj = {};
+
+  for (let i = 0; i < headLinesArr.length; i++) {
+    if (!sortedHeadLinesObj.hasOwnProperty(headLinesArr[i].source.name)) {
+      sortedHeadLinesObj[headLinesArr[i].source.name] = [];
+
+      sortedHeadLinesObj[headLinesArr[i].source.name].push(headLinesArr[i]);
+    } else {
+      sortedHeadLinesObj[headLinesArr[i].source.name].push(headLinesArr[i]);
+    }
+  }
+
+  res.status(200).send(sortedHeadLinesObj)
+
+  // console.log(sortedHeadLinesObj);
+
+
 
 
   // try {
