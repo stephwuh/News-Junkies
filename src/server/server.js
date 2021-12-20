@@ -60,25 +60,27 @@ app.get("/api/getSources", async (_req, res) => {
 });
 
 app.post("/api/postUserSource", async (req, res) => {
+
+
   const newsId = req.body;
 
   console.log(req.body);
 
   try {
-    let response = await UserSource.bulkCreate(newsId, { returning: true });
+    await UserSource.bulkCreate(newsId, { returning: true });
 
-    res.status(200).send("updated successfully  ");
+    res.status(200).send("updated successfully");
   } catch (error) {
     res.status(500).send("database error");
   }
 });
 
 app.get("/api/my-news", async (req, res) => {
-  // const searchTerm = [{ searchTerm: [] }, { url: [] }];
+
 
   let query;
-  let sources = "",
-    domains = "";
+  let search = { sources: [], domains: [] };
+  let headLinesObj = {}
 
   try {
     query = await UserSource.findAll({ include: news });
@@ -86,120 +88,81 @@ app.get("/api/my-news", async (req, res) => {
     res.status(500).send("database error");
   }
 
-  // console.log(query)
+//  console.log(query[0].news.dataValues.name)
 
   for (let i = 0; i < query.length; i++) {
+
+    headLinesObj[query[i].news.dataValues.name] = [];
+
     if (query[i].news.dataValues.searchTerm) {
       // searchTerm[0].searchTerm.push(query[i].news.dataValues.searchTerm)
 
-      sources += query[i].news.dataValues.searchTerm + ",";
+      search.sources.push(query[i].news.dataValues.searchTerm);
     } else {
       // searchTerm[1].url.push(query[i].news.dataValues.url)
 
-      domains += query[i].news.dataValues.url + ",";
+      search.domains.push(query[i].news.dataValues.url);
     }
   }
 
-  console.log(sources)
-  console.log(domains)
+  console.log(search);
+  console.log(headLinesObj)
 
-  let headLines;
+  // let response = await newsapi.v2.everything({
+  //           // sources: 'cnn',
+  //           // q: 'cspan',
+  //           domains: '	dailywire.com',
+  //           // category: 'business',
+  //           language: "en",
+  //           // country: 'us',
+  //           pageSize: 15,
+  //         });
+
+  // console.log(response.articles[0].source)
 
   try {
-    headLines = await newsapi.v2.everything({
-      sources: sources,
-      // q: 'cspan',
-      domains: domains,
-      // category: 'business',
-      language: "en",
-      // country: 'us'
-    });
-  } catch (error) {
-    res.status(500).send("Issue with News Api");
-  }
 
-  let headLinesArr = [...headLines.articles];
-
-  // console.log(headLinesArr)
-
-  let sortedHeadLinesObj = {};
-
-  for (let i = 0; i < headLinesArr.length; i++) {
-    if (!sortedHeadLinesObj.hasOwnProperty(headLinesArr[i].source.name)) {
-      sortedHeadLinesObj[headLinesArr[i].source.name] = [];
-
-      sortedHeadLinesObj[headLinesArr[i].source.name].push(headLinesArr[i]);
-    } else {
-      sortedHeadLinesObj[headLinesArr[i].source.name].push(headLinesArr[i]);
+    for (let searchTerm in search) {
+      for (let i = 0; i < search[searchTerm].length; i++) {
+  
+        let response;
+  
+        if (searchTerm === "sources") {
+          response = await newsapi.v2.everything({
+            sources: search[searchTerm][i],
+            // q: 'cspan',
+            // domains: domains,
+            // category: 'business',
+            language: "en",
+            // country: 'us',
+            pageSize: 15,
+          });
+        } else {
+  
+          response = await newsapi.v2.everything({
+            // sources: sources,
+            // q: 'cspan',
+            domains: search[searchTerm][i],
+            // category: 'business',
+            language: "en",
+            // country: 'us',
+            pageSize: 15,
+          });
+  
+        }
+  
+        headLinesObj[response.articles[0].source.name] = response.articles
+  
+      }
     }
+    
+  } catch (error) {
+      res.status(503).send("something wrong with 3rd party api")
   }
 
-  res.status(200).send(sortedHeadLinesObj)
+  res.status(200).send(headLinesObj)
 
-  // console.log(sortedHeadLinesObj);
-
-
-
-
-  // try {
-
-  //     let userSource = [];
-
-  //     const query = await UserSource.findAll({include: news});
-
-  //     for (let i=0; i < query.length; i++){
-  //         userSource.push(query[i].news.dataValues.source)
-  //     }
-
-  //     console.log(userSource)
-
-  //     const string = userSource.join(',')
-
-  //     console.log(string)
-
-  // const headLines = await axios.get(`https://newsapi.org/v2/top-headlines?country=us&apiKey=ff88b865f6204634b0276875d1dac794`)
-
-  // const headLines = newsapi.v2.topHeadlines({
-  //     sources: 'time',
-  //     // q: 'bitcoin',
-  //     // category: 'business',
-  //     language: 'en',
-  //     // country: 'us'
-  //   })
-
-  //   const headLines = await newsapi.v2.everything({
-  //     // sources: 'ABC-News',
-  //     // q: 'cspan',
-  //     domains: 'www.ap.org',
-  //     // category: 'business',
-  //     language: 'en',
-  //     // country: 'us'
-  //   })
-
-  // const headLines = await newsapi.v2.sources({
-  //     // category: 'technology',
-  //     name:"New York Times",
-  //     language: 'en',
-  //     // country: 'us'
-  //   })
-
-  //     console.log(headLines)
-
-  // } catch (error) {
-
-  // }
-
-  // const country = 'us'
-
-  // try {
-
-  //     const response = await axios.get(`https://newsapi.org/v2/top-headlines?country=${country}&apiKey=${process.env.NEWSAPI_KEY}`);
-
-  //     res.send(response.data);
-
-  // } catch (error) {
-  //     res.status(502).send('Issue with third party api');
-  // }
+ 
 });
 
 connect();

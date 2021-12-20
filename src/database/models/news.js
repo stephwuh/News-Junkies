@@ -39,6 +39,11 @@ const news = connection.define('news', {
       field: 'url',
       // allowNull: false
     },
+    name: {
+      type: DataTypes.STRING,
+      field: 'name',
+      // allowNull: false
+    },
     
     // createdAt: Sequelize.DATE,
     // updatedAt: Sequelize.DATE,
