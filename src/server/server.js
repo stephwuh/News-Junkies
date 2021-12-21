@@ -60,8 +60,6 @@ app.get("/api/getSources", async (_req, res) => {
 });
 
 app.post("/api/postUserSource", async (req, res) => {
-
-
   const newsId = req.body;
 
   console.log(req.body);
@@ -76,11 +74,17 @@ app.post("/api/postUserSource", async (req, res) => {
 });
 
 app.get("/api/my-news", async (req, res) => {
-
-
   let query;
-  let search = { sources: [], domains: [] };
-  let headLinesObj = {}
+
+  let headLinesObj = {
+    left: {},
+    leftCenter: {},
+    center: {},
+    rightCenter: {},
+    right: {},
+  };
+
+  //database inner join query to get user source and news info
 
   try {
     query = await UserSource.findAll({ include: news });
@@ -88,81 +92,132 @@ app.get("/api/my-news", async (req, res) => {
     res.status(500).send("database error");
   }
 
-//  console.log(query[0].news.dataValues.name)
+/* 
+  1) organizing query data according to bias rating and then name of source.
+  2) I check to see if the source has a search term of a url and then make an API call to newsapi.org based on that information.
+  3) I push the news articles into the appropriate object.
+*/
 
   for (let i = 0; i < query.length; i++) {
+    let response;
 
-    headLinesObj[query[i].news.dataValues.name] = [];
+    switch (query[i].news.dataValues.rating) {
+      case "left":
+        headLinesObj.left[query[i].news.dataValues.name] = [];
 
-    if (query[i].news.dataValues.searchTerm) {
-      // searchTerm[0].searchTerm.push(query[i].news.dataValues.searchTerm)
-
-      search.sources.push(query[i].news.dataValues.searchTerm);
-    } else {
-      // searchTerm[1].url.push(query[i].news.dataValues.url)
-
-      search.domains.push(query[i].news.dataValues.url);
-    }
-  }
-
-  console.log(search);
-  console.log(headLinesObj)
-
-  // let response = await newsapi.v2.everything({
-  //           // sources: 'cnn',
-  //           // q: 'cspan',
-  //           domains: '	dailywire.com',
-  //           // category: 'business',
-  //           language: "en",
-  //           // country: 'us',
-  //           pageSize: 15,
-  //         });
-
-  // console.log(response.articles[0].source)
-
-  try {
-
-    for (let searchTerm in search) {
-      for (let i = 0; i < search[searchTerm].length; i++) {
-  
-        let response;
-  
-        if (searchTerm === "sources") {
+        if (query[i].news.dataValues.searchTerm) {
           response = await newsapi.v2.everything({
-            sources: search[searchTerm][i],
-            // q: 'cspan',
-            // domains: domains,
-            // category: 'business',
+            sources: query[i].news.dataValues.searchTerm,
             language: "en",
-            // country: 'us',
             pageSize: 15,
           });
         } else {
-  
           response = await newsapi.v2.everything({
-            // sources: sources,
-            // q: 'cspan',
-            domains: search[searchTerm][i],
-            // category: 'business',
+            domains: query[i].news.dataValues.url,
             language: "en",
-            // country: 'us',
             pageSize: 15,
           });
-  
         }
-  
-        headLinesObj[response.articles[0].source.name] = response.articles
-  
-      }
+
+        headLinesObj.left[query[i].news.dataValues.name].push(
+          response.articles
+        );
+
+        break;
+
+      case "left-center":
+        headLinesObj.leftCenter[query[i].news.dataValues.name] = [];
+
+        if (query[i].news.dataValues.searchTerm) {
+          response = await newsapi.v2.everything({
+            sources: query[i].news.dataValues.searchTerm,
+            language: "en",
+            pageSize: 15,
+          });
+        } else {
+          response = await newsapi.v2.everything({
+            domains: query[i].news.dataValues.url,
+            language: "en",
+            pageSize: 15,
+          });
+        }
+
+        headLinesObj.leftCenter[query[i].news.dataValues.name].push(
+          response.articles
+        );
+
+        break;
+      case "center":
+        headLinesObj.center[query[i].news.dataValues.name] = [];
+
+        if (query[i].news.dataValues.searchTerm) {
+          response = await newsapi.v2.everything({
+            sources: query[i].news.dataValues.searchTerm,
+            language: "en",
+            pageSize: 15,
+          });
+        } else {
+          response = await newsapi.v2.everything({
+            domains: query[i].news.dataValues.url,
+            language: "en",
+            pageSize: 15,
+          });
+        }
+
+        headLinesObj.center[query[i].news.dataValues.name].push(
+          response.articles
+        );
+
+        break;
+      case "right-center":
+        headLinesObj.rightCenter[query[i].news.dataValues.name] = [];
+
+        if (query[i].news.dataValues.searchTerm) {
+          response = await newsapi.v2.everything({
+            sources: query[i].news.dataValues.searchTerm,
+            language: "en",
+            pageSize: 15,
+          });
+        } else {
+          response = await newsapi.v2.everything({
+            domains: query[i].news.dataValues.url,
+            language: "en",
+            pageSize: 15,
+          });
+        }
+
+        headLinesObj.rightCenter[query[i].news.dataValues.name].push(
+          response.articles
+        );
+
+        break;
+
+      case "right":
+        headLinesObj.right[query[i].news.dataValues.name] = [];
+
+        if (query[i].news.dataValues.searchTerm) {
+          response = await newsapi.v2.everything({
+            sources: query[i].news.dataValues.searchTerm,
+            language: "en",
+            pageSize: 15,
+          });
+        } else {
+          response = await newsapi.v2.everything({
+            domains: query[i].news.dataValues.url,
+            language: "en",
+            pageSize: 15,
+          });
+        }
+
+        headLinesObj.right[query[i].news.dataValues.name].push(
+          response.articles
+        );
     }
-    
-  } catch (error) {
-      res.status(503).send("something wrong with 3rd party api")
   }
 
-  res.status(200).send(headLinesObj)
-
  
+
+  res.status(200).send(headLinesObj);
 });
 
 connect();
