@@ -74,15 +74,35 @@ app.post("/api/postUserSource", async (req, res) => {
 });
 
 app.get("/api/my-news", async (req, res) => {
+
+  // let response = await newsapi.v2.everything({
+  //               q: 'business',
+  //               sources: 'cnn',
+  //               // domains: query[i].news.dataValues.url,
+  //               language: "en",
+  //               pageSize: 15,
+  //             });
+
+  // console.log(response.articles)
+
+
   let query;
 
   let headLinesObj = {
-    left: {},
-    leftCenter: {},
     center: {},
     rightCenter: {},
+    leftCenter: {},
     right: {},
+    left: {},
   };
+
+  let centerArr = [];
+  let rightCenterArr = [];
+  let leftCenterArr = [];
+  let rightArr = [];
+  let leftArr =[];
+
+
 
   //database inner join query to get user source and news info
 
@@ -100,10 +120,13 @@ app.get("/api/my-news", async (req, res) => {
 
   for (let i = 0; i < query.length; i++) {
     let response;
+    let arr;
 
     switch (query[i].news.dataValues.rating) {
       case "left":
         headLinesObj.left[query[i].news.dataValues.name] = [];
+
+        //make repeating if else statement into module
 
         if (query[i].news.dataValues.searchTerm) {
           response = await newsapi.v2.everything({
@@ -111,6 +134,7 @@ app.get("/api/my-news", async (req, res) => {
             language: "en",
             pageSize: 15,
           });
+
         } else {
           response = await newsapi.v2.everything({
             domains: query[i].news.dataValues.url,
@@ -119,9 +143,20 @@ app.get("/api/my-news", async (req, res) => {
           });
         }
 
+        arr = [...response.articles]
+
+        for(let y=0; y<arr.length; y++){
+
+          arr[y].ratingNum = 1
+
+        }
+
+
         headLinesObj.left[query[i].news.dataValues.name].push(
-          response.articles
+          arr
         );
+
+       
 
         break;
 
@@ -142,9 +177,19 @@ app.get("/api/my-news", async (req, res) => {
           });
         }
 
+        arr = [...response.articles]
+
+        for(let y=0; y<arr.length; y++){
+
+          arr[y].ratingNum = 2
+
+        }
+
         headLinesObj.leftCenter[query[i].news.dataValues.name].push(
-          response.articles
+          arr
         );
+
+       
 
         break;
       case "center":
@@ -164,9 +209,19 @@ app.get("/api/my-news", async (req, res) => {
           });
         }
 
+        arr = [...response.articles]
+
+        for(let y=0; y<arr.length; y++){
+
+          arr[y].ratingNum = 3
+
+        }
+
         headLinesObj.center[query[i].news.dataValues.name].push(
-          response.articles
+          arr
         );
+
+       
 
         break;
       case "right-center":
@@ -186,9 +241,20 @@ app.get("/api/my-news", async (req, res) => {
           });
         }
 
+        arr = [...response.articles]
+
+        for(let y=0; y<arr.length; y++){
+
+          arr[y].ratingNum = 4
+
+        }
+
         headLinesObj.rightCenter[query[i].news.dataValues.name].push(
-          response.articles
+          arr
         );
+
+       
+
 
         break;
 
@@ -209,9 +275,19 @@ app.get("/api/my-news", async (req, res) => {
           });
         }
 
+        arr = [...response.articles]
+
+        for(let y=0; y<arr.length; y++){
+
+          arr[y].ratingNum = 5
+
+        }
+
         headLinesObj.right[query[i].news.dataValues.name].push(
-          response.articles
+          arr
         );
+
+
     }
   }
 
