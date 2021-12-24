@@ -2,7 +2,7 @@
 
 module.exports = {
 
-    userBiasCalc: function(biasNum, articleCount){
+    sourcesNeeded: function(biasNum, articleCount){
 
         //this array contains the rating number needed to balance the user bias number to 3
 
@@ -17,26 +17,34 @@ module.exports = {
 
         while(Math.round(biasNum*100)/100 !== 3){
 
+            //making sure ratingNumArr contains integers only
+
             let ratingNeeded = Math.round(3*(articleCount+1) - (biasNum*articleCount))
 
-                //making sure ratingNumArr contains integers
+                
 
 
 
             if(ratingNeeded > 5) {
+
+                
 
                 if(ratingNeeded <=10 ){
                     ratingNumArr.push(5,4,3)
                     biasNum = ((biasNum*articleCount) + 5+4+3)/(articleCount+3)
                     articleCount +=3
                 }else{
+
+                    // if ratingNeeded is a high number, 
+                    // we want users to focus more on the right leaning articles.
+
                     ratingNumArr.push(5,4)
                     biasNum = ((biasNum*articleCount) + 5+4)/(articleCount+2)
                     articleCount +=2
                 }    
 
-                console.log('rating: ' + ratingNeeded)
-                console.log('bias: '+ biasNum)
+                // console.log('rating: ' + ratingNeeded)
+                // console.log('bias: '+ biasNum)
                 
 
             } else if (ratingNeeded < 0 ){
@@ -50,14 +58,17 @@ module.exports = {
 
                 }else{
 
+                    // if ratingNeeded is a high negative number, 
+                    // we want users to focus more on the left leaning articles.
+
                     ratingNumArr.push(1,2)
                     biasNum = ((biasNum*articleCount) + 1+2)/(articleCount+2)
                     articleCount +=2
 
                 }
 
-                console.log('rating: ' + ratingNeeded)
-                console.log('bias: '+ biasNum)
+                // console.log('rating: ' + ratingNeeded)
+                // console.log('bias: '+ biasNum)
 
             } else{
 
@@ -72,8 +83,8 @@ module.exports = {
 
                 articleCount ++
 
-                console.log('rating: ' + ratingNeeded)
-                console.log('bias: '+ biasNum)
+                // console.log('rating: ' + ratingNeeded)
+                // console.log('bias: '+ biasNum)
             }
 
             
@@ -83,7 +94,8 @@ module.exports = {
 
         return ratingNumArr
 
-    }
+    },
+
 
 }
 
