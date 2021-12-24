@@ -3,15 +3,18 @@ require("dotenv").config();
 const cors = require("cors");
 const axios = require("axios");
 const app = express();
-const connect = require(".././database/database.js");
+const connect = require("../database/database.js");
 
-const news = require(".././database/models/news.js");
+const news = require("../database/models/news.js");
 
-const UserSource = require(".././database/models/userSource.js");
+const UserSource = require("../database/models/userSource.js");
+const User = require("../database/models/user.js");
 
-const sequelize = require(".././database/sequelizeConfig");
+const sequelize = require("../database/sequelizeConfig");
 
 const NewsAPI = require("newsapi");
+
+const UserBiasCalc = require("./UserBiasCalc.js");
 
 const newsapi = new NewsAPI("ff88b865f6204634b0276875d1dac794");
 
@@ -88,13 +91,9 @@ app.get("/api/my-news", async (req, res) => {
 
   let query;
 
-  let headLinesObj = {
-    center: {},
-    rightCenter: {},
-    leftCenter: {},
-    right: {},
-    left: {},
-  };
+  let bias;
+  let count;
+
 
   let centerArr = [];
   let rightCenterArr = [];
@@ -102,15 +101,37 @@ app.get("/api/my-news", async (req, res) => {
   let rightArr = [];
   let leftArr =[];
 
-
+  let arr
 
   //database inner join query to get user source and news info
 
   try {
     query = await UserSource.findAll({ include: news });
+    await User.create({
+      userBias: 3,
+      articleCount: 0,
+    })
+    let response = await User.findOne({
+      where: {id: 1},
+      attributes: ['userBias', 'articleCount']
+    });
+    
+    bias = response.dataValues.userBias
+    count = response.dataValues.articleCount
+
   } catch (error) {
     res.status(500).send("database error");
   }
+
+
+console.log(UserBiasCalc.userBiasCalc(4, 100))
+// console.log(UserBiasCalc.userBiasCalc(1, 2))    
+
+
+
+// [2,2,2,5, 4 ]
+// 12 - 6 = 6   
+// 15 - 
 
 /* 
   1) organizing query data according to bias rating and then name of source.
@@ -118,182 +139,172 @@ app.get("/api/my-news", async (req, res) => {
   3) I push the news articles into the appropriate object.
 */
 
-  for (let i = 0; i < query.length; i++) {
-    let response;
-    let arr;
+  // for (let i = 0; i < query.length; i++) {
+  //   let response;
 
-    switch (query[i].news.dataValues.rating) {
-      case "left":
-        headLinesObj.left[query[i].news.dataValues.name] = [];
+  //   switch (query[i].news.dataValues.rating) {
+  //     case "left":
 
-        //make repeating if else statement into module
+  //       //make repeating if else statement into module
 
-        if (query[i].news.dataValues.searchTerm) {
-          response = await newsapi.v2.everything({
-            sources: query[i].news.dataValues.searchTerm,
-            language: "en",
-            pageSize: 15,
-          });
+  //       if (query[i].news.dataValues.searchTerm) {
+  //         response = await newsapi.v2.topHeadlines({
+  //           sources: query[i].news.dataValues.searchTerm,
+  //           language: "en",
+  //           pageSize: 15,
+  //         });
 
-        } else {
-          response = await newsapi.v2.everything({
-            domains: query[i].news.dataValues.url,
-            language: "en",
-            pageSize: 15,
-          });
-        }
+  //       } else {
+  //         response = await newsapi.v2.everything({
+  //           domains: query[i].news.dataValues.url,
+  //           language: "en",
+  //           pageSize: 15,
+  //         });
+  //       }
 
-        arr = [...response.articles]
+  //       leftArr = [...response.articles]
 
-        for(let y=0; y<arr.length; y++){
+  //       for(let y=0; y<leftArr.length; y++){
 
-          arr[y].ratingNum = 1
+  //         leftArr[y].ratingNum = 1
 
-        }
-
-
-        headLinesObj.left[query[i].news.dataValues.name].push(
-          arr
-        );
-
+  //       }
        
 
-        break;
+  //       break;
 
-      case "left-center":
-        headLinesObj.leftCenter[query[i].news.dataValues.name] = [];
-
-        if (query[i].news.dataValues.searchTerm) {
-          response = await newsapi.v2.everything({
-            sources: query[i].news.dataValues.searchTerm,
-            language: "en",
-            pageSize: 15,
-          });
-        } else {
-          response = await newsapi.v2.everything({
-            domains: query[i].news.dataValues.url,
-            language: "en",
-            pageSize: 15,
-          });
-        }
-
-        arr = [...response.articles]
-
-        for(let y=0; y<arr.length; y++){
-
-          arr[y].ratingNum = 2
-
-        }
-
-        headLinesObj.leftCenter[query[i].news.dataValues.name].push(
-          arr
-        );
-
+  //     case "left-center":
        
 
-        break;
-      case "center":
-        headLinesObj.center[query[i].news.dataValues.name] = [];
+  //       if (query[i].news.dataValues.searchTerm) {
+  //         response = await newsapi.v2.topHeadlines({
+  //           sources: query[i].news.dataValues.searchTerm,
+  //           language: "en",
+  //           pageSize: 15,
+  //         });
+  //       } else {
+  //         response = await newsapi.v2.everything({
+  //           domains: query[i].news.dataValues.url,
+  //           language: "en",
+  //           pageSize: 15,
+  //         });
+  //       }
 
-        if (query[i].news.dataValues.searchTerm) {
-          response = await newsapi.v2.everything({
-            sources: query[i].news.dataValues.searchTerm,
-            language: "en",
-            pageSize: 15,
-          });
-        } else {
-          response = await newsapi.v2.everything({
-            domains: query[i].news.dataValues.url,
-            language: "en",
-            pageSize: 15,
-          });
-        }
+  //       leftCenterArr = [...response.articles]
 
-        arr = [...response.articles]
+  //       for(let y=0; y<leftCenterArr.length; y++){
 
-        for(let y=0; y<arr.length; y++){
+  //         leftCenterArr[y].ratingNum = 2
 
-          arr[y].ratingNum = 3
+  //       }
+     
 
-        }
-
-        headLinesObj.center[query[i].news.dataValues.name].push(
-          arr
-        );
-
+  //       break;
+  //     case "center":
        
 
-        break;
-      case "right-center":
-        headLinesObj.rightCenter[query[i].news.dataValues.name] = [];
+  //       if (query[i].news.dataValues.searchTerm) {
+  //         response = await newsapi.v2.topHeadlines({
+  //           sources: query[i].news.dataValues.searchTerm,
+  //           language: "en",
+  //           pageSize: 15,
+  //         });
+  //       } else {
+  //         response = await newsapi.v2.everything({
+  //           domains: query[i].news.dataValues.url,
+  //           language: "en",
+  //           pageSize: 15,
+  //         });
+  //       }
 
-        if (query[i].news.dataValues.searchTerm) {
-          response = await newsapi.v2.everything({
-            sources: query[i].news.dataValues.searchTerm,
-            language: "en",
-            pageSize: 15,
-          });
-        } else {
-          response = await newsapi.v2.everything({
-            domains: query[i].news.dataValues.url,
-            language: "en",
-            pageSize: 15,
-          });
-        }
+  //       centerArr = [...response.articles]
 
-        arr = [...response.articles]
+  //       for(let y=0; y<centerArr.length; y++){
 
-        for(let y=0; y<arr.length; y++){
+  //         centerArr[y].ratingNum = 3
 
-          arr[y].ratingNum = 4
+  //       }
 
-        }
 
-        headLinesObj.rightCenter[query[i].news.dataValues.name].push(
-          arr
-        );
-
+  //       break;
+  //     case "right-center":
        
 
+  //       if (query[i].news.dataValues.searchTerm) {
+  //         response = await newsapi.v2.topHeadlines({
+  //           sources: query[i].news.dataValues.searchTerm,
+  //           language: "en",
+  //           pageSize: 15,
+  //         });
+  //       } else {
+  //         response = await newsapi.v2.everything({
+  //           domains: query[i].news.dataValues.url,
+  //           language: "en",
+  //           pageSize: 15,
+  //         });
+  //       }
 
-        break;
+  //       rightCenterArr = [...response.articles]
 
-      case "right":
-        headLinesObj.right[query[i].news.dataValues.name] = [];
+  //       for(let y=0; y<rightCenterArr.length; y++){
 
-        if (query[i].news.dataValues.searchTerm) {
-          response = await newsapi.v2.everything({
-            sources: query[i].news.dataValues.searchTerm,
-            language: "en",
-            pageSize: 15,
-          });
-        } else {
-          response = await newsapi.v2.everything({
-            domains: query[i].news.dataValues.url,
-            language: "en",
-            pageSize: 15,
-          });
-        }
+  //         rightCenterArr[y].ratingNum = 4
 
-        arr = [...response.articles]
+  //       }
 
-        for(let y=0; y<arr.length; y++){
-
-          arr[y].ratingNum = 5
-
-        }
-
-        headLinesObj.right[query[i].news.dataValues.name].push(
-          arr
-        );
+      
 
 
-    }
-  }
+  //       break;
 
- 
+  //     case "right":
+        
 
-  res.status(200).send(headLinesObj);
+  //       if (query[i].news.dataValues.searchTerm) {
+  //         response = await newsapi.v2.topHeadlines({
+  //           sources: query[i].news.dataValues.searchTerm,
+  //           language: "en",
+  //           pageSize: 15,
+  //         });
+  //       } else {
+  //         response = await newsapi.v2.everything({
+  //           domains: query[i].news.dataValues.url,
+  //           language: "en",
+  //           pageSize: 15,
+  //         });
+  //       }
+
+  //       rightArr = [...response.articles]
+
+  //       for(let y=0; y<rightArr.length; y++){
+
+  //         rightArr[y].ratingNum = 5
+
+  //       }
+
+      
+
+
+  //   }
+  // }
+
+  // let responseArr = []
+
+  // if(bias === 3){
+  //   for (let i=0; i<centerArr.length; i++){
+
+  //     responseArr.push(centerArr[i], rightCenterArr[i], leftCenterArr[i], rightArr[i], leftArr[i])
+  
+  //   }
+  // } else{
+
+  //   userBiasCalc.userBiasCalc(bias, count)
+
+  // }
+
+  
+
+  // res.status(200).send(responseArr);
 });
 
 connect();
