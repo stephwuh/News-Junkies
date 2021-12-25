@@ -9,8 +9,6 @@ module.exports = {
         let ratingNumArr = []; 
 
 
-        
-
 
         // rounded biasNum *100 then divided by 100 to round biasNum to 2 decimal places
         // so while loop doesn't continue on for a long time. 

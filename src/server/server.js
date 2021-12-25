@@ -120,7 +120,7 @@ app.get("/api/my-news", async (req, res) => {
 
   /* 
   1) organizing query data according to bias rating and then name of source.
-  2) I check to see if the source has a search term of a url and then make an API call to newsapi.org based on that information.
+  2) I check to see if the source has a search term or a url and then make an API call to newsapi.org based on that information.
   3) I push the news articles into the appropriate object.
 */
 
@@ -254,6 +254,8 @@ app.get("/api/my-news", async (req, res) => {
 
   let responseArr1 = [];
 
+  // This is the state when user bias is balanced.
+
   for (let i = 0; i < centerArr.length; i++) {
     responseArr1.push(
       centerArr[i],           //3
@@ -297,6 +299,7 @@ app.get("/api/my-news", async (req, res) => {
     let rightArr = [];
     let leftArr = [];
 
+    //looping over mutated responseArr1 (excluding user recommended articles based on bias number). 
 
     responseArr1.forEach(article => {
 
@@ -339,6 +342,14 @@ app.get("/api/my-news", async (req, res) => {
 
   }
 });
+
+app.post('/api/auth/signup', (req,res)=>{
+
+
+  res.status(200).send('Sign up successful')
+
+
+})
 
 connect();
 
