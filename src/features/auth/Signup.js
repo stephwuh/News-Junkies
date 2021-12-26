@@ -62,9 +62,26 @@ const Signup = () => {
         password: values.password
     }
 
-    signup(userInfo)
+    // console.log(userInfo)
 
-    navigate('/settings');
+    signup(userInfo).then((res)=>{
+
+        console.log(res.data)
+
+        sessionStorage.setItem('userId', res.data.userId)
+
+        navigate('/settings');
+
+  
+    }
+
+    ).catch((error)=>{
+
+      console.log(error)
+
+    })
+
+    
 
   };
 

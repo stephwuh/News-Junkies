@@ -5,10 +5,11 @@ const axios = require("axios");
 const app = express();
 const connect = require("../database/database.js");
 
-const news = require("../database/models/news.js");
+const News = require("../database/models/news.js");
 
-const UserSource = require("../database/models/userSource.js");
+// const UserSource = require("../database/models/userSource.js");
 const User = require("../database/models/user.js");
+// const UserNews = require("../database/models/userNews.js");
 
 const sequelize = require("../database/sequelizeConfig");
 
@@ -34,7 +35,7 @@ app.get("/api/getSearch/", async (_req, res) => {
 
 app.get("/api/getSources", async (_req, res) => {
   try {
-    const query = await news.findAll();
+    const query = await News.findAll();
 
     let left = [];
     let leftCenter = [];
@@ -63,12 +64,25 @@ app.get("/api/getSources", async (_req, res) => {
 });
 
 app.post("/api/postUserSource", async (req, res) => {
-  const newsId = req.body;
 
-  console.log(req.body);
+
+
 
   try {
-    await UserSource.bulkCreate(newsId, { returning: true });
+
+    const user = await User.findOne({
+      where: {id: req.body.UserId}
+    });
+
+
+    // console.log(user.dataValues)
+    // console.log(req.body.newsId)
+
+    await user.setSources(req.body.newsId)
+
+    // await UserNews.bulkCreate(userInfoArr, {returning: true});
+
+    // await UserSou.bulkCreate(newsId, { returning: true });
 
     res.status(200).send("updated successfully");
   } catch (error) {
@@ -76,7 +90,7 @@ app.post("/api/postUserSource", async (req, res) => {
   }
 });
 
-app.get("/api/my-news", async (req, res) => {
+app.get("/api/my-news/:userId", async (req, res) => {
   // let response = await newsapi.v2.everything({
   //               q: 'business',
   //               sources: 'cnn',
@@ -86,6 +100,8 @@ app.get("/api/my-news", async (req, res) => {
   //             });
 
   // console.log(response.articles)
+
+  let userId = req.params.userId;
 
   let query;
 
@@ -98,22 +114,28 @@ app.get("/api/my-news", async (req, res) => {
   let rightArr = [];
   let leftArr = [];
 
-
   //database inner join query to get user source and news info
 
   try {
-    query = await UserSource.findAll({ include: news });
-    await User.create({
-      userBias: 5,
-      articleCount: 10,
-    });
-    let response = await User.findOne({
-      where: { id: 1 },
-      attributes: ["userBias", "articleCount"],
+    let user = await User.findOne({
+      where: { id: userId },
+
+      include: {model: News, as: "Sources"}
+
     });
 
-    bias = response.dataValues.userBias;
-    count = response.dataValues.articleCount;
+    query = user.dataValues.Sources
+
+    console.log(query);
+
+    // let response = await User.findOne({
+    //   where: { id: 1 },
+    //   attributes: ["userBias", "articleCount"],
+    // });
+
+    bias = user.dataValues.userBias;
+    count = user.dataValues.articleCount;
+
   } catch (error) {
     res.status(500).send("database error");
   }
@@ -127,19 +149,19 @@ app.get("/api/my-news", async (req, res) => {
   for (let i = 0; i < query.length; i++) {
     let response;
 
-    switch (query[i].news.dataValues.rating) {
+    switch (query[i].dataValues.rating) {
       case "left":
         //make repeating if else statement into module
 
-        if (query[i].news.dataValues.searchTerm) {
+        if (query[i].dataValues.searchTerm) {
           response = await newsapi.v2.everything({
-            sources: query[i].news.dataValues.searchTerm,
+            sources: query[i].dataValues.searchTerm,
             language: "en",
             pageSize: 15,
           });
         } else {
           response = await newsapi.v2.everything({
-            domains: query[i].news.dataValues.url,
+            domains: query[i].dataValues.url,
             language: "en",
             pageSize: 15,
           });
@@ -154,15 +176,15 @@ app.get("/api/my-news", async (req, res) => {
         break;
 
       case "left-center":
-        if (query[i].news.dataValues.searchTerm) {
+        if (query[i].dataValues.searchTerm) {
           response = await newsapi.v2.everything({
-            sources: query[i].news.dataValues.searchTerm,
+            sources: query[i].dataValues.searchTerm,
             language: "en",
             pageSize: 15,
           });
         } else {
           response = await newsapi.v2.everything({
-            domains: query[i].news.dataValues.url,
+            domains: query[i].dataValues.url,
             language: "en",
             pageSize: 15,
           });
@@ -176,15 +198,15 @@ app.get("/api/my-news", async (req, res) => {
 
         break;
       case "center":
-        if (query[i].news.dataValues.searchTerm) {
+        if (query[i].dataValues.searchTerm) {
           response = await newsapi.v2.everything({
-            sources: query[i].news.dataValues.searchTerm,
+            sources: query[i].dataValues.searchTerm,
             language: "en",
             pageSize: 15,
           });
         } else {
           response = await newsapi.v2.everything({
-            domains: query[i].news.dataValues.url,
+            domains: query[i].dataValues.url,
             language: "en",
             pageSize: 15,
           });
@@ -198,15 +220,15 @@ app.get("/api/my-news", async (req, res) => {
 
         break;
       case "right-center":
-        if (query[i].news.dataValues.searchTerm) {
+        if (query[i].dataValues.searchTerm) {
           response = await newsapi.v2.everythings({
-            sources: query[i].news.dataValues.searchTerm,
+            sources: query[i].dataValues.searchTerm,
             language: "en",
             pageSize: 15,
           });
         } else {
           response = await newsapi.v2.everything({
-            domains: query[i].news.dataValues.url,
+            domains: query[i].dataValues.url,
             language: "en",
             pageSize: 15,
           });
@@ -221,15 +243,15 @@ app.get("/api/my-news", async (req, res) => {
         break;
 
       case "right":
-        if (query[i].news.dataValues.searchTerm) {
+        if (query[i].dataValues.searchTerm) {
           response = await newsapi.v2.everything({
-            sources: query[i].news.dataValues.searchTerm,
+            sources: query[i].dataValues.searchTerm,
             language: "en",
             pageSize: 15,
           });
         } else {
           response = await newsapi.v2.everything({
-            domains: query[i].news.dataValues.url,
+            domains: query[i].dataValues.url,
             language: "en",
             pageSize: 15,
           });
@@ -251,7 +273,6 @@ app.get("/api/my-news", async (req, res) => {
 
   // console.log(leftArr)
 
-
   let responseArr1 = [];
 
   // This is the state when user bias is balanced.
@@ -266,8 +287,7 @@ app.get("/api/my-news", async (req, res) => {
     );
   }
 
-
-  if (bias === 3) { 
+  if (bias === 3) {
 
     res.status(200).send(responseArr1);
 
@@ -284,7 +304,7 @@ app.get("/api/my-news", async (req, res) => {
     array.forEach((num) => {
       let index = responseArr1.findIndex(element => element.ratingNum === num);
 
-      // recommendedArticles.push(responseArr.splice(index, 1)) 
+      // recommendedArticles.push(responseArr.splice(index, 1))
 
       let article = responseArr1.splice(index, 1)
 
@@ -292,14 +312,13 @@ app.get("/api/my-news", async (req, res) => {
 
     });
 
-
     let centerArr = [];
     let rightCenterArr = [];
     let leftCenterArr = [];
     let rightArr = [];
     let leftArr = [];
 
-    //looping over mutated responseArr1 (excluding user recommended articles based on bias number). 
+    //looping over mutated responseArr1 (excluding user recommended articles based on bias number).
 
     responseArr1.forEach(article => {
 
@@ -343,13 +362,28 @@ app.get("/api/my-news", async (req, res) => {
   }
 });
 
-app.post('/api/auth/signup', (req,res)=>{
+app.post("/api/auth/signup", async (req, res) => {
+  const { firstName, lastName, email, password } = req.body;
 
+  console.log(req.body);
 
-  res.status(200).send('Sign up successful')
+  try {
+    let createdUser = await User.create({
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      password: password,
+    });
 
+    // console.log(createdUser.dataValues.id)
 
-})
+    let responseObj = { userId: createdUser.dataValues.id };
+
+    res.status(200).send(responseObj);
+  } catch (error) {
+    res.status(500).send("database error");
+  }
+});
 
 connect();
 

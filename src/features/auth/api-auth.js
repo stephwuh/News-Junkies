@@ -4,9 +4,9 @@ const signup = async (user) => {
 
     try {
 
-        let response = await axios.post('/api/auth/signup', user)
+        let response = await axios.post('http://localhost:5050/api/auth/signup', user)
 
-        return response.data
+        return response
 
     //   let response = await fetch('/auth/signin/', {
     //     method: 'POST',

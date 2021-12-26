@@ -38,31 +38,35 @@ const NewsSettings = () => {
 
     e.preventDefault();
 
-    const userSource = [
-      ...leftState,
-      ...leftCenterState,
-      ...centerState,
-      ...rightCenterState,
-      ...rightState,
-    ];
+    const userInfoObj = {
+      UserId: +sessionStorage.getItem("userId"),
+      newsId: [
+        ...leftState,
+        ...leftCenterState,
+        ...centerState,
+        ...rightCenterState,
+        ...rightState,
+      ]
+    }
+    
 
-    console.log(userSource)
+    console.log(userInfoObj)
 
 
 
       //check for server error/success message
 
-      try {
-        await axios.post("http://localhost:5050/api/postUserSource", userSource
-        )
+        try {
+          await axios.post("http://localhost:5050/api/postUserSource", userInfoObj
+          )
 
-        alert("Updated Successfully!");
+          alert("Updated Successfully!");
 
-        navigate('/my-news');
-          
-      } catch (error) {
-        alert("Something went wrong!");
-      }
+          navigate('/my-news');
+            
+        } catch (error) {
+          alert("Something went wrong!");
+        }
 
 
     
@@ -77,7 +81,7 @@ const NewsSettings = () => {
   const handleLeftOnChange = (e) => {
     if (e.target.checked) {
       
-      setLeftState([...leftState, {newsId: +e.target.value}]);
+      setLeftState([...leftState, +e.target.value]);
     } else {
       setLeftState(leftState.filter((source) => source !== e.target.value));
     }
@@ -85,7 +89,7 @@ const NewsSettings = () => {
 
   const handleLeftCenterOnChange = (e) => {
     if (e.target.checked) {
-      setLeftCenterState([...leftCenterState, {newsId: +e.target.value}]);
+      setLeftCenterState([...leftCenterState, +e.target.value]);
     } else {
       setLeftCenterState(
         leftCenterState.filter((source) => source !== e.target.value)
@@ -95,7 +99,7 @@ const NewsSettings = () => {
 
   const handleCenterOnChange = (e) => {
     if (e.target.checked) {
-      setCenterState([...centerState, {newsId: +e.target.value}]);
+      setCenterState([...centerState, +e.target.value]);
     } else {
       setCenterState(centerState.filter((source) => source !== e.target.value));
     }
@@ -103,7 +107,7 @@ const NewsSettings = () => {
 
   const handleRightCenterOnChange = (e) => {
     if (e.target.checked) {
-      setRightCenterState([...rightCenterState, {newsId: +e.target.value}]);
+      setRightCenterState([...rightCenterState, +e.target.value]);
     } else {
       setRightCenterState(
         rightCenterState.filter((source) => source !== e.target.value)
@@ -113,7 +117,7 @@ const NewsSettings = () => {
 
   const handleRightOnChange = (e) => {
     if (e.target.checked) {
-      setRightState([...rightState, {newsId: +e.target.value}]);
+      setRightState([...rightState,  +e.target.value]);
     } else {
       setRightState(rightState.filter((source) => source !== e.target.value));
     }
