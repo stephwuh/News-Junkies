@@ -7,9 +7,9 @@ const connect = require("../database/database.js");
 
 const News = require("../database/models/news.js");
 
-// const UserSource = require("../database/models/userSource.js");
+
 const User = require("../database/models/user.js");
-// const UserNews = require("../database/models/userNews.js");
+
 
 const sequelize = require("../database/sequelizeConfig");
 
