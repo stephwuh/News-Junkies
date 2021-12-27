@@ -93,7 +93,51 @@ module.exports = {
         return ratingNumArr
 
     },
+    
+    addArticleBias: function(userBias, articleBias, articleCount){
 
+        let newBiasDataObj = {}
+
+        newBiasDataObj.newArticleCount = articleCount+1
+
+        if(articleCount === 0) {
+
+            newBiasDataObj.newUserBias = articleBias
+        
+        } else{
+
+            newBiasDataObj.newUserBias = (userBias*articleCount + articleBias)/(newBiasDataObj.newArticleCount)
+
+        }
+        
+ 
+        return newBiasDataObj
+
+    },
+    undoArticleBias: function(userBias, articleBias, articleCount){
+
+        
+
+        if(articleCount ===0) throw "article count shouldn't be 0 when undoing article bias "
+
+        let newBiasDataObj = {}
+
+        newBiasDataObj.newArticleCount = articleCount-1
+
+        if(articleCount ===1){
+
+            newBiasDataObj.newUserBias = 3
+
+        } else{
+
+            newBiasDataObj.newUserBias = (userBias*articleCount - articleBias)/(newBiasDataObj.newArticleCount)    
+
+        }
+
+    
+        return newBiasDataObj
+
+    }
 
 }
 

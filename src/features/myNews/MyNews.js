@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
+import NewsCard from "./NewsCard.js";
+
 const MyNews = () => {
   const [searchState, setSearchState] = useState(null);
   const [headlineState, setHeadlineState] = useState(null);
@@ -11,7 +13,11 @@ const MyNews = () => {
         // const response = await axios.get('http://localhost:5050/api/getSearch');
         // setSearchState(response.data);
 
-        const response = await axios.get(`http://localhost:5050/api/my-news/${sessionStorage.getItem("userId")}`);
+        const response = await axios.get(
+          `http://localhost:5050/api/my-news/${sessionStorage.getItem(
+            "userId"
+          )}`
+        );
 
         setHeadlineState(response.data);
       } catch (error) {
@@ -22,33 +28,23 @@ const MyNews = () => {
     getNewsAPI();
   }, []);
 
+  if (!headlineState) return <div>loading</div>;
 
-  if(!headlineState) return(<div>loading</div>)
+  console.log(headlineState);
 
-  console.log(headlineState)
-
-  return(
-
-    Object.keys(headlineState).map((source, index)=>{
-      
-        return(
-
-            <div key={index}>
-                <h3>{source}</h3>
-            </div>
-
-        )
-
-    })   
-
-
+  return (
+    <div>
+      {headlineState.map((source, index) => {
+        return <div><NewsCard key={index} source={source} /></div> ;
+      })}
+    </div>
   );
 
-//   const headlineItems = headlineState.map((headline, index) => {
-//     return <li key={index}>{headline.title}</li>;
-//   });
+  //   const headlineItems = headlineState.map((headline, index) => {
+  //     return <li key={index}>{headline.title}</li>;
+  //   });
 
-//   return <div>{headlineItems && <ul>{headlineItems}</ul>}</div>;
+  //   return <div>{headlineItems && <ul>{headlineItems}</ul>}</div>;
 };
 
 export default MyNews;
