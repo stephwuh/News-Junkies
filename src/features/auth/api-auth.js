@@ -6,25 +6,32 @@ const signup = async (user) => {
 
         let response = await axios.post('http://localhost:5050/api/auth/signup', user)
 
-        return response
+        return response.data
 
-    //   let response = await fetch('/auth/signin/', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Accept': 'application/json',
-    //       'Content-Type': 'application/json'
-    //     },
-    //     credentials: 'include',
-    //     body: JSON.stringify(user)
-    //   })
-    //   return await response.json()
     } catch(err) {
-      console.log(err)
+
+      return err.response.data
     }
   }
   
-  
+  const signin = async (user) => {
+
+
+
+    try {
+
+        let response = await axios.post('http://localhost:5050/api/auth/signin', user)
+
+        return response.data
+
+    } catch(err) {
+      
+      return err.response.data 
+      
+    }
+  }
   
   export {
-    signup
+    signup,
+    signin
   }

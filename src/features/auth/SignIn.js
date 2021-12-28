@@ -1,4 +1,7 @@
-import * as React from 'react';
+import React, {useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+
+
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -12,6 +15,8 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+import {signin} from './api-auth.js'
 
 function Copyright(props) {
   return (
@@ -28,16 +33,43 @@ function Copyright(props) {
 
 const theme = createTheme();
 
-export default function SignIn() {
-  const handleSubmit = (event) => {
+const SignIn = () => {
+
+  const [values, setValues] = useState({
+    email: "",
+    password: "",
+  });
+
+  let navigate = useNavigate();
+
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+   
+    const userInfo = {
+
+      email: values.email,
+      password: values.password
+  }
+
+  console.log(userInfo)
+
+    let response =  await signin(userInfo)
+    
+    if(response.userId){
+      sessionStorage.setItem('userId', response.userId)
+
+      navigate('/my-news');
+    }else{
+      alert(response)
+    }
+    
+
   };
+
+  const handleChange = name => event => {
+    setValues({ ...values, [name]: event.target.value })
+  } 
 
   return (
     <ThemeProvider theme={theme}>
@@ -67,6 +99,7 @@ export default function SignIn() {
               name="email"
               autoComplete="email"
               autoFocus
+              onChange={handleChange('email')}
             />
             <TextField
               margin="normal"
@@ -77,6 +110,7 @@ export default function SignIn() {
               type="password"
               id="password"
               autoComplete="current-password"
+              onChange={handleChange('password')}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
@@ -109,3 +143,5 @@ export default function SignIn() {
     </ThemeProvider>
   );
 }
+
+export default SignIn;

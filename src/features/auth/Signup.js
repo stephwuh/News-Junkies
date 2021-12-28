@@ -50,7 +50,7 @@ const Signup = () => {
 
   let navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
 
     event.preventDefault();
 
@@ -62,24 +62,18 @@ const Signup = () => {
         password: values.password
     }
 
-    // console.log(userInfo)
+    console.log(userInfo)
 
-    signup(userInfo).then((res)=>{
+    let response = await signup(userInfo)
+    
+    
+    if(response.userId){
+      sessionStorage.setItem('userId', response.userId)
 
-        console.log(res.data)
-
-        sessionStorage.setItem('userId', res.data.userId)
-
-        navigate('/settings');
-
-  
+      navigate('/my-news');
+    }else{
+      alert(response)
     }
-
-    ).catch((error)=>{
-
-      console.log(error)
-
-    })
 
     
 

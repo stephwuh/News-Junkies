@@ -38,6 +38,7 @@ export default function NewsCard (props){
         boxShadow: 1,
         fontWeight: 'bold',
       }}
+      key={props.key}
     >
       <Box
         component="img"
