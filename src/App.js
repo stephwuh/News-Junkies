@@ -5,7 +5,7 @@ import NewsSettings from './features/newsSettings/NewsSettings.js';
 import MyNews from './features/myNews/MyNews.js';
 import Signup from './features/auth/Signup.js';
 import SignIn from './features/auth/SignIn.js';
-
+import NavBar from './features/nav/NavBar';
 
 import {Routes, Route} from 'react-router-dom'; 
 
@@ -13,6 +13,7 @@ import {Routes, Route} from 'react-router-dom';
 function App() {
   return (
     <div>
+      <NavBar/>
       <Routes>
         <Route path='/sign-in' element={<SignIn/>} />
         <Route path='/sign-up' element={<Signup/>} />

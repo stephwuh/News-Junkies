@@ -3,15 +3,15 @@ import axios from "axios";
 
 import NewsCard from "./NewsCard.js";
 
-import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
 
 // import styled from '@emotion/styled';
 
 import {styled} from '@mui/system'
 
-const StyledBox = styled(Box, {})({
+const StyledContainer = styled(Container, {})({
 
-  width: '80vw'
+  maxWidth: "false"
 
 
 })
@@ -47,11 +47,11 @@ const MyNews = () => {
 
   return (
     <div>
-     <StyledBox>
+     <StyledContainer>
         {headlineState.map((source, index) => {
           return <div><NewsCard key={index} source={source} /></div> ;
         })}
-      </StyledBox>
+      </StyledContainer>
     </div>
   );
 
