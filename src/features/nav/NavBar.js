@@ -1,7 +1,5 @@
 import React from 'react'
 
-import {styled} from '@mui/system'
-
 import Box from '@mui/material/Box';
 import AppBar from '@mui/material/AppBar';
 import ToolBar from '@mui/material/Toolbar';
@@ -9,20 +7,10 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 
-// const StyledNav = styled(Box, {})({
-
-//     height: '50px'
-  
-  
-//   })
-
-
-// const Nav = styled()
 
 const NavBar = () => {
 
     return(
-        <Box>
             <AppBar position="static">
                 <Container>
                     <ToolBar disableGutters="true" sx={{
@@ -46,8 +34,6 @@ const NavBar = () => {
                     </ToolBar>
                 </Container>
             </AppBar>
-
-        </Box>
     )
 
 }

@@ -99,6 +99,16 @@ app.get("/api/my-news/:userId", async (req, res) => {
     let rightArr = [];
     let leftArr = [];
 
+
+
+    //  let  response = await newsapi.v2.everything({
+    //     domains: "huffpost.com",
+    //     language: "en",
+    //     pageSize: 15,
+    //   });
+
+    //   console.log(response)
+
     //database inner join query to get user source and news info
 
     try {
@@ -250,6 +260,8 @@ app.get("/api/my-news/:userId", async (req, res) => {
       }
     }
 
+    console.log(leftArr)
+
     // let centerArr = [];
     // let rightCenterArr = [];
     // let leftCenterArr = [];
@@ -298,6 +310,8 @@ app.get("/api/my-news/:userId", async (req, res) => {
         tempArr.push(article[0])
 
       });
+
+      console.log(tempArr)
 
       let centerArr = [];
       let rightCenterArr = [];

@@ -3,18 +3,19 @@ import axios from "axios";
 
 import NewsCard from "./NewsCard.js";
 
-import Container from '@mui/material/Container';
+import Container from "@mui/material/Container";
 
 // import styled from '@emotion/styled';
 
-import {styled} from '@mui/system'
+import { styled } from "@mui/system";
+import Typography from "@mui/material/Typography";
 
-const StyledContainer = styled(Container, {})({
-
-  maxWidth: "false"
-
-
-})
+const StyledContainer = styled(
+  Container,
+  {}
+)({
+  maxWidth: "false",
+});
 
 const MyNews = () => {
   const [searchState, setSearchState] = useState(null);
@@ -47,9 +48,14 @@ const MyNews = () => {
 
   return (
     <div>
-     <StyledContainer>
+      <StyledContainer>
+        <Typography variant="h5">Latest News</Typography>
         {headlineState.map((source, index) => {
-          return <div><NewsCard key={index} source={source} /></div> ;
+          return (
+            <div>
+              <NewsCard key={index} source={source} />
+            </div>
+          );
         })}
       </StyledContainer>
     </div>
