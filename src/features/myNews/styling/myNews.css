@@ -1,0 +1,23 @@
+
+/* used css media query because material ui's useMediaQuery had such bad impact on code readability  */
+
+/* md~lg */
+@media only screen and (max-width: 1271px) {   		 
+    .my-news-container {
+      width: 971px !important;  
+    }
+  }
+
+/* sm~md */
+  @media only screen and (max-width: 970px) {   		 
+    .my-news-container {
+      width: 664px !important;
+    }
+  }
+
+  /* xs~sm */
+  @media only screen and (max-width: 663px) {   		 
+    .my-news-container {
+      width: 350px !important;
+    }
+  }

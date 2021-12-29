@@ -11,18 +11,13 @@ import Checkbox from "@mui/material/Checkbox";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 
+import {CardTitle} from './styling/muiStyling.js'
 
-import LinesEllipsis from "react-lines-ellipsis";
 
 const CardCustom = styled(Card)({
   width: 300,
   height: 300,
   margin: 3,
-});
-
-const CardTitle = styled(LinesEllipsis)({
-  fontWeight: "bold",
-
 });
 
 const TypographySource = styled(Typography)({

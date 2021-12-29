@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-import './myNews.css'
+import './styling/myNews.css'
 
 import NewsCard from "./NewsCard.js";
 
@@ -15,7 +15,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import CardActions from "@mui/material/CardActions";
-import useMediaQuery from '@mui/material/useMediaQuery';
+
 
 // const StyledContainer = styled(
 //   Container,
@@ -27,6 +27,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 const MyNews = () => {
   const [searchState, setSearchState] = useState(null);
   const [headlineState, setHeadlineState] = useState(null);
+
 
 
   useEffect(() => {
@@ -56,6 +57,8 @@ const MyNews = () => {
 
   return (
     <div>
+
+
       <Container className="my-news-container" maxWidth='lg'>
       
         <Typography variant="h5">Latest news</Typography>
@@ -74,9 +77,9 @@ const MyNews = () => {
           <Box>
           {headlineState.other.map((source, index) => {
             return (
-              <div>
+           
                 <NewsCard key={index} source={source} type={"other"} />
-              </div>
+             
             );
           })}
         </Box>
