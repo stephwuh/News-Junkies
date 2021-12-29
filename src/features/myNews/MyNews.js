@@ -1,25 +1,33 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-import NewsCard from "./NewsCard.js";
+import './myNews.css'
 
-import Container from "@mui/material/Container";
+import NewsCard from "./NewsCard.js";
 
 // import styled from '@emotion/styled';
 
 import { styled } from "@mui/system";
 import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+import CardActions from "@mui/material/CardActions";
+import useMediaQuery from '@mui/material/useMediaQuery';
 
-const StyledContainer = styled(
-  Container,
-  {}
-)({
-  maxWidth: "false",
-});
+// const StyledContainer = styled(
+//   Container,
+//   {}
+// )({
+//   maxWidth: "false",
+// });
 
 const MyNews = () => {
   const [searchState, setSearchState] = useState(null);
   const [headlineState, setHeadlineState] = useState(null);
+
 
   useEffect(() => {
     const getNewsAPI = async () => {
@@ -48,16 +56,32 @@ const MyNews = () => {
 
   return (
     <div>
-      <StyledContainer>
-        <Typography variant="h5">Latest News</Typography>
-        {headlineState.map((source, index) => {
-          return (
-            <div>
-              <NewsCard key={index} source={source} />
-            </div>
-          );
-        })}
-      </StyledContainer>
+      <Container className="my-news-container" maxWidth='lg'>
+      
+        <Typography variant="h5">Latest news</Typography>
+        <Box>
+          <Typography variant="h6">Recommended news</Typography>
+          <Box sx={{display: "flex", flexWrap: "wrap", justifyContent: "space-between"}}>
+            {headlineState.recommended.map((source, index) => {
+              return (
+                <NewsCard key={index} source={source} type={"recommended"} />
+              );
+            })}
+          </Box>
+        </Box>
+      
+          <Typography variant="h6">More news</Typography>
+          <Box>
+          {headlineState.other.map((source, index) => {
+            return (
+              <div>
+                <NewsCard key={index} source={source} type={"other"} />
+              </div>
+            );
+          })}
+        </Box>
+     
+      </Container>
     </div>
   );
 

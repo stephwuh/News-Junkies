@@ -9,17 +9,22 @@ import NavBar from './features/nav/NavBar';
 
 import {Routes, Route} from 'react-router-dom'; 
 
+import theme from './features/misc/theme.js'
+import { ThemeProvider } from '@mui/material/styles';
+
 
 function App() {
   return (
     <div>
-      <NavBar/>
-      <Routes>
-        <Route path='/sign-in' element={<SignIn/>} />
-        <Route path='/sign-up' element={<Signup/>} />
-        <Route path='/settings' element={<NewsSettings/>}/>
-        <Route path='/my-news' element={<MyNews/>} />
-      </Routes>
+      <ThemeProvider theme={theme}>
+        <NavBar/>
+        <Routes>
+          <Route path='/sign-in' element={<SignIn/>} />
+          <Route path='/sign-up' element={<Signup/>} />
+          <Route path='/settings' element={<NewsSettings/>}/>
+          <Route path='/my-news' element={<MyNews/>} />
+        </Routes>
+      </ThemeProvider>
     </div>
   );
 }

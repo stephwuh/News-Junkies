@@ -12,10 +12,10 @@ const NavBar = () => {
 
     return(
             <AppBar position="static">
-                <Container>
+                <Container maxWidth='xl'>
                     <ToolBar disableGutters="true" sx={{
                         justifyContent: 'space-between',
-                        maxWidth: 'lg'
+                        // maxWidth: 'xl'
                     }}>
                         <Typography variant="h6" component="div">
                             News Junkies
