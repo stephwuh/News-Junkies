@@ -1,12 +1,21 @@
 import { styled } from "@mui/system";
-import LinesEllipsis from "react-lines-ellipsis";
+import Link from "@mui/material/Link";  
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 
-const CardTitle = styled(LinesEllipsis)({
-    fontWeight: "bold",
-  
+
+const TitleLink = styled(Link)({
+
+    color: "black", 
+    textDecoration: "none"
+
+})
+
+const Source = styled(Typography)({
+    fontStyle: "italic",
+    fontSize: "0.8rem",
+    marginTop: 5
   });
 
 
-
-
-export {CardTitle}
+export {TitleLink, Source}

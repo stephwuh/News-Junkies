@@ -11,7 +11,7 @@ import Checkbox from "@mui/material/Checkbox";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 
-import {CardTitle} from './styling/muiStyling.js'
+import {TitleLink, Source} from './styling/muiStyling.js'
 
 
 const CardCustom = styled(Card)({
@@ -26,7 +26,7 @@ const TypographySource = styled(Typography)({
 
 
 
-export default function NewsCardRecommended(props) {
+export default function NewsCardShort(props) {
   
     let imageSrc
 
@@ -48,6 +48,8 @@ export default function NewsCardRecommended(props) {
         break;
     }
 
+    // console.log(props.source.title)
+
   return (
     <CardCustom>
       <CardMedia
@@ -57,21 +59,19 @@ export default function NewsCardRecommended(props) {
         alt="green iguana"
       />
       <CardContent sx={{ pb: 0, textAlign:'center' }}>
-      <Link
+      <TitleLink
           href={props.source.url}
           target="_blank"
           rel="noopener"
-          sx={{color:"black", textDecoration:"none"}}
+          
         >
-            <CardTitle
-            text={props.source.title}
-            maxLine="2"
-            ellipsis="..."
-            trimRight
-            basedOn="letters"
-            />
-        </Link>
-        <TypographySource sx={{ fontSize: "0.8rem", mt: 1 }}>
+         <h5 className="news-card-title">
+          {props.source.title ? props.source.title : "No Title"}
+        </h5>
+            
+        </TitleLink>
+
+        <Source>
           {props.source.source.name}
           <img
             src={imageSrc}
@@ -80,7 +80,8 @@ export default function NewsCardRecommended(props) {
             width="72"
             style={{marginLeft:'7px'}}
           />
-        </TypographySource>
+        </Source>
+
         
       </CardContent>
       <CardActions sx={{display:"flex", justifyContent: "center"}}>

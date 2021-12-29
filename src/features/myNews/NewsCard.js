@@ -6,16 +6,22 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 
 import { updateUserBiasRating } from "./api-myNews";
 
-import NewsCardOther from "./NewsCardOther.js";
-import NewsCardRecommended from "./NewsCardRecommended.js";
+import NewsCardLong from "./NewsCardLong.js";
+import NewsCardShort from "./NewsCardShort.js";
 
 import { styled } from '@mui/system';
+
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTheme } from "@mui/material/styles";
 
 
 
 
 export default function NewsCard(props) {
   const [checked, setChecked] = useState(false);
+
+  const theme = useTheme();
+  const OtherArticlesMediaQuery = useMediaQuery(theme.breakpoints.up("sm"));
 
   const handleChange = (event) => {
     setChecked(event.target.checked);
@@ -35,15 +41,23 @@ export default function NewsCard(props) {
   return (
     <div>
       {props.type === "recommended" && (
-        <NewsCardRecommended
+        <NewsCardShort  
           key={props.key}
           source={props.source}
           onChange={handleChange}
           checked={checked}
         />
       )}
-      {props.type === "other" && (
-        <NewsCardOther
+      {(props.type === "other" && OtherArticlesMediaQuery) && (
+        <NewsCardLong
+          key={props.key}
+          source={props.source}
+          onChange={handleChange}
+          checked={checked}
+        />
+      )}
+       {(props.type === "other" && !OtherArticlesMediaQuery) && (
+        <NewsCardShort
           key={props.key}
           source={props.source}
           onChange={handleChange}

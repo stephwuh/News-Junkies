@@ -21,3 +21,13 @@
       width: 350px !important;
     }
   }
+
+
+/* regarding cutting off card title after 2 lines    */
+.news-card-title{
+  font-weight: bold;
+  display:-webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}

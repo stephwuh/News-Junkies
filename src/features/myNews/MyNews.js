@@ -17,12 +17,13 @@ import CardMedia from "@mui/material/CardMedia";
 import CardActions from "@mui/material/CardActions";
 
 
-// const StyledContainer = styled(
-//   Container,
-//   {}
-// )({
-//   maxWidth: "false",
-// });
+const Title = styled(Typography)({
+  fontWeight: "bold",
+  fontSize: 20,
+  marginTop: 18,
+  marginBottom: 18,
+
+});
 
 const MyNews = () => {
   const [searchState, setSearchState] = useState(null);
@@ -60,10 +61,12 @@ const MyNews = () => {
 
 
       <Container className="my-news-container" maxWidth='lg'>
-      
-        <Typography variant="h5">Latest news</Typography>
+
+          <Title>Latest News - Recommended</Title>
+
+        
         <Box>
-          <Typography variant="h6">Recommended news</Typography>
+          {/* <Typogr aphy variant="h6">Recommended news</Typogr> */}
           <Box sx={{display: "flex", flexWrap: "wrap", justifyContent: "space-between"}}>
             {headlineState.recommended.map((source, index) => {
               return (
@@ -72,8 +75,10 @@ const MyNews = () => {
             })}
           </Box>
         </Box>
-      
-          <Typography variant="h6">More news</Typography>
+
+             <Title sx={{marginTop: 5}}>More News</Title>
+
+          
           <Box>
           {headlineState.other.map((source, index) => {
             return (
