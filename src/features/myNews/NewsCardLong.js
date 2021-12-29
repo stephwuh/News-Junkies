@@ -9,7 +9,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import { styled } from "@mui/system";
 
-import {TitleLink, Source } from "./styling/muiStyling.js";
+import {TitleLink, Source} from "./styling/muiStyling.js";
 
 export default function NewsCardLong(props) {
 
