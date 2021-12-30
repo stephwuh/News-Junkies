@@ -25,11 +25,9 @@ const Title = styled(Typography)({
 
 });
 
-const MyNews = () => {
+const MyNews = (props) => {
   const [searchState, setSearchState] = useState(null);
   const [headlineState, setHeadlineState] = useState(null);
-
-
 
   useEffect(() => {
     const getNewsAPI = async () => {

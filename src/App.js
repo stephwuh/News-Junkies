@@ -1,4 +1,4 @@
-
+import React, {useState} from 'react'
 import './App.css';
 
 import NewsSettings from './features/newsSettings/NewsSettings.js';
@@ -13,18 +13,31 @@ import theme from './features/misc/theme.js'
 import { ThemeProvider } from '@mui/material/styles';
 
 
+
 function App() {
+
+  const [category, setCategory] = useState('latest')
+
+  const handleCategory = (category) => {
+
+    setCategory(category)
+
+  }
+
+
   return (
     <div>
+
       <ThemeProvider theme={theme}>
-        <NavBar/>
+        <NavBar category={handleCategory}/>
         <Routes>
           <Route path='/sign-in' element={<SignIn/>} />
           <Route path='/sign-up' element={<Signup/>} />
           <Route path='/settings' element={<NewsSettings/>}/>
-          <Route path='/my-news' element={<MyNews/>} />
+          <Route path='/my-news' element={<MyNews category={category}/>} />
         </Routes>
       </ThemeProvider>
+      
     </div>
   );
 }

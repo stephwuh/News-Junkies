@@ -50,21 +50,24 @@ export default function NewsCardLong(props) {
         boxShadow: 1,
         // fontWeight: "bold",
         my: 1,
+        // height: 233
       }}
       key={props.key}
     >
-      <Box
-        component="img"
-        sx={{
-          height: 233,
-          width: 350,
-          maxHeight: 217,
-          maxWidth: 250,
-          objectFit: "cover",
-        }}
-        alt="article image"
-        src={props.source.urlToImage}
-      />
+       {/* <Box
+          component="img"
+          sx={{
+            height: 132,
+            width: 234, 
+            // maxHeight: 217,
+            minWidth: 234,
+            objectFit: "cover",
+            // marginLeft:5
+          }}
+          alt="article image"
+          src={props.source.image.contentUrl}
+        /> */}
+        
       <Box
         sx={{
           display: "flex",
@@ -72,9 +75,10 @@ export default function NewsCardLong(props) {
           // alignItems: "flex-start",
           m: 3,
           minWidth: { md: 350 },
+          width: 925  
         }}
       >
-        {/* <Box sx={{ fontSize: 20, mt: 1 }}>{props.source.title}</Box> */}
+        <Box sx={{ fontSize: 20, mt: 1 }}>{props.source.title}</Box>
 
         <TitleLink
           href={props.source.url}
@@ -82,14 +86,14 @@ export default function NewsCardLong(props) {
           rel="noopener"
           
         >
-          {/* LinesEllipsis not working need to debug. works when you comment out and then in. but stops working after refresh */}
+      
           <h5 className="news-card-title">
-          {props.source.title ? props.source.title : "No Title"}
+          {props.source.name ? props.source.name : "No Title"}
         </h5>
         </TitleLink>
 
         <Source>
-          {props.source.source.name} 
+          {props.source.provider[0].name} 
           <img
             src={imageSrc}
             alt="bias image"
@@ -116,6 +120,7 @@ export default function NewsCardLong(props) {
           />
         </FormGroup>
       </Box>
+     
     </Box>
   );
 }
