@@ -84,15 +84,17 @@ app.post("/api/postUserSource", async (req, res) => {
   }
 });
 
-app.get("/api/my-news/:userId", async (req, res) => {
+app.get("/api/my-news/", async (req, res) => {
 
 
-    let userId = req.params.userId;
+    // let userId = req.params.userId;
 
-    let query;
+    // let query;
 
-    let bias;
-    let count;
+    // let bias;
+    // let count;
+
+    console.log(req.query)
 
 
     // console.log(await bingApi.search('npr', 20))
@@ -101,268 +103,255 @@ app.get("/api/my-news/:userId", async (req, res) => {
 
   //   //database inner join query to get user source and news info
 
-    try {
-      let user = await User.findOne({
-        where: { id: userId },
+  //   try {
+  //     let user = await User.findOne({
+  //       where: { id: userId },
 
-        include: {model: News, as: "Sources"}
+  //       include: {model: News, as: "Sources"}
 
-      });
+  //     });
 
-      query = user.dataValues.Sources
+  //     query = user.dataValues.Sources
 
-      // console.log(query)  
+  //     // console.log(query)  
 
-      bias = user.dataValues.userBias;
-      count = user.dataValues.articleCount;
+  //     bias = user.dataValues.userBias;
+  //     count = user.dataValues.articleCount;
 
-    } catch (error) {
-      res.status(500).send("database error");
-    }
+  //   } catch (error) {
+  //     res.status(500).send("database error");
+  //   }
 
-    // console.log(query)
+  //   // console.log(query)
 
-    //figuring out how many sources there are per political bias
-    //so when we make the api call per source we dont get a lopsided amount of articles 
-    //for any of the categories
+  //   //figuring out how many sources there are per political bias
+  //   //so when we make the api call per source we dont get a lopsided amount of articles 
+  //   //for any of the categories
 
-    let sourceObj = {
+  //   let sourceObj = {
 
-      "left": 0,
-      "left-center":0,
-      "center": 0,
-      "right-center": 0,
-      "right": 0
+  //     "left": 0,
+  //     "left-center":0,
+  //     "center": 0,
+  //     "right-center": 0,
+  //     "right": 0
 
-    }
+  //   }
 
-    // console.log(query)
+  //   // console.log(query)
 
-    for (let i=0; i < query.length; i++){
-      if(sourceObj.hasOwnProperty(query[i].dataValues.rating)){
-        sourceObj[query[i].dataValues.rating] ++
-      }  
-    }
+  //   for (let i=0; i < query.length; i++){
+  //     if(sourceObj.hasOwnProperty(query[i].dataValues.rating)){
+  //       sourceObj[query[i].dataValues.rating] ++
+  //     }  
+  //   }
 
-    // console.log(sourceObj)
+  //   // console.log(sourceObj)
 
-    /*
-    1) organizing query data according to bias rating and then name of source.
-    2) I check to see if the source has a search term or a url and then make an API call to newsapi.org based on that information.
-    3) I push the news articles into the appropriate object.
-  */
+  //   /*
+  //   1) organizing query data according to bias rating and then name of source.
+  //   2) I check to see if the source has a search term or a url and then make an API call to newsapi.org based on that information.
+  //   3) I push the news articles into the appropriate object.
+  // */
 
-    let centerArr = [];
-    let rightCenterArr = [];
-    let leftCenterArr = [];
-    let rightArr = [];
-    let leftArr = [];
+  //   let centerArr = [];
+  //   let rightCenterArr = [];
+  //   let leftCenterArr = [];
+  //   let rightArr = [];
+  //   let leftArr = [];
 
-    for (let i = 0; i < query.length; i++) {
-      let response;
-      let searchTerm;
-      let numOfArticles;
+  //   for (let i = 0; i < query.length; i++) {
+  //     let response;
+  //     let searchTerm;
+  //     let numOfArticles;
 
-      switch (query[i].dataValues.rating) {
-        case "left":
+  //     switch (query[i].dataValues.rating) {
+  //       case "left":
           
-          searchTerm = query[i].dataValues.name
-          numOfArticles = Math.floor(10/sourceObj["left"])
+  //         searchTerm = query[i].dataValues.name
+  //         numOfArticles = Math.floor(10/sourceObj["left"])
 
-          response = await bingApi.search(searchTerm, numOfArticles)
+  //         response = await bingApi.search(searchTerm, numOfArticles)
 
-          leftArr = [...leftArr, ...response];
+  //         leftArr = [...leftArr, ...response];
 
-          for (let y = 0; y < leftArr.length; y++) {
-            leftArr[y].ratingNum = 1;
-            leftArr[y].rating = 'left';
-          }
+  //         for (let y = 0; y < leftArr.length; y++) {
+  //           leftArr[y].ratingNum = 1;
+  //           leftArr[y].rating = 'left';
+  //         }
 
-          break;
+  //         break;
 
-        case "left-center":
+  //       case "left-center":
          
-          searchTerm = query[i].dataValues.name
-          numOfArticles = Math.floor(10/sourceObj["left-center"])
+  //         searchTerm = query[i].dataValues.name
+  //         numOfArticles = Math.floor(10/sourceObj["left-center"])
 
-          response = await bingApi.search(searchTerm, numOfArticles)
+  //         response = await bingApi.search(searchTerm, numOfArticles)
 
-          leftCenterArr = [...leftCenterArr, ...response];
+  //         leftCenterArr = [...leftCenterArr, ...response];
 
-          for (let y = 0; y < leftCenterArr.length; y++) {
-            leftCenterArr[y].ratingNum = 2;
-            leftCenterArr[y].rating = 'left center';
-          }
+  //         for (let y = 0; y < leftCenterArr.length; y++) {
+  //           leftCenterArr[y].ratingNum = 2;
+  //           leftCenterArr[y].rating = 'left center';
+  //         }
 
-          break;
-
-
-        case "center":
-
-          searchTerm = query[i].dataValues.name
-          numOfArticles = Math.floor(10/sourceObj["center"])
-
-          response = await bingApi.search(searchTerm, numOfArticles)
-
-          centerArr = [...centerArr, ...response];
-
-          for (let y = 0; y < centerArr.length; y++) {
-            centerArr[y].ratingNum = 3;
-            centerArr[y].rating = 'center';
-          }
-
-          break;
+  //         break;
 
 
-        case "right-center":
+  //       case "center":
 
-          searchTerm = query[i].dataValues.name
-          numOfArticles = Math.floor(10/sourceObj["right-center"])
+  //         searchTerm = query[i].dataValues.name
+  //         numOfArticles = Math.floor(10/sourceObj["center"])
 
-          response = await bingApi.search(searchTerm, numOfArticles)
+  //         response = await bingApi.search(searchTerm, numOfArticles)
+
+  //         centerArr = [...centerArr, ...response];
+
+  //         for (let y = 0; y < centerArr.length; y++) {
+  //           centerArr[y].ratingNum = 3;
+  //           centerArr[y].rating = 'center';
+  //         }
+
+  //         break;
 
 
-          rightCenterArr = [...rightCenterArr, ...response];
+  //       case "right-center":
 
-          for (let y = 0; y < rightCenterArr.length; y++) {
-            rightCenterArr[y].ratingNum = 4;
-            rightCenterArr[y].rating = 'right center';
-          }
+  //         searchTerm = query[i].dataValues.name
+  //         numOfArticles = Math.floor(10/sourceObj["right-center"])
 
-          break;
+  //         response = await bingApi.search(searchTerm, numOfArticles)
 
-        case "right":
 
-          searchTerm = query[i].dataValues.name
-          numOfArticles = Math.floor(10/sourceObj["right"])
+  //         rightCenterArr = [...rightCenterArr, ...response];
 
-          response = await bingApi.search(searchTerm, numOfArticles)
+  //         for (let y = 0; y < rightCenterArr.length; y++) {
+  //           rightCenterArr[y].ratingNum = 4;
+  //           rightCenterArr[y].rating = 'right center';
+  //         }
 
-          rightArr = [...rightArr, ...response];
+  //         break;
 
-          for (let y = 0; y < rightArr.length; y++) {
-            rightArr[y].ratingNum = 5;
-            rightArr[y].rating = 'right';
-          }
-      }
-    }
+  //       case "right":
 
-    // console.log(leftArr)
-    // console.log(leftCenterArr)
-    // console.log(centerArr)
-    // console.log(rightCenterArr)
-    // console.log(leftArr)
+  //         searchTerm = query[i].dataValues.name
+  //         numOfArticles = Math.floor(10/sourceObj["right"])
 
-  //   // let centerArr = [];
-  //   // let rightCenterArr = [];
-  //   // let leftCenterArr = [];
-  //   // let rightArr = [];
-  //   // let leftArr = [];
+  //         response = await bingApi.search(searchTerm, numOfArticles)
 
-  //   // console.log(leftArr)
+  //         rightArr = [...rightArr, ...response];
 
-    let responseArr1 = [];
+  //         for (let y = 0; y < rightArr.length; y++) {
+  //           rightArr[y].ratingNum = 5;
+  //           rightArr[y].rating = 'right';
+  //         }
+  //     }
+  //   }
 
-    // This is the state when user bias is balanced.
 
-    for (let i = 0; i < centerArr.length; i++) {
-      responseArr1.push(
-        centerArr[i],           //3
-        rightCenterArr[i],      //4
-        leftCenterArr[i],       //2
-        rightArr[i],            //5
-        leftArr[i]              //1
-      );
-    }
+  //   let responseArr1 = [];
 
-      //need to filter out articles that are null because sometimes
-      //bing news API returns less articles than the number of articles you request
+  //   // This is the state when user bias is balanced.
 
-    let responseArr2 = responseArr1.filter(article => article !== undefined)
+  //   for (let i = 0; i < centerArr.length; i++) {
+  //     responseArr1.push(
+  //       centerArr[i],           //3
+  //       rightCenterArr[i],      //4
+  //       leftCenterArr[i],       //2
+  //       rightArr[i],            //5
+  //       leftArr[i]              //1
+  //     );
+  //   }
+
+  //     //need to filter out articles that are null because sometimes
+  //     //bing news API returns less articles than the number of articles you request
+
+  //   let responseArr2 = responseArr1.filter(article => article !== undefined)
     
-    let tempArr = [];
+  //   let tempArr = [];
 
-    let recommendedArticleArr
+  //   let recommendedArticleArr
     
    
-    if (bias === 3) {
+  //   if (bias === 3) {
 
-      recommendedArticleArr = responseArr2.splice(0,12)
+  //     recommendedArticleArr = responseArr2.splice(0,12)
 
-      res.status(200).send({recommended: recommendedArticleArr, other: responseArr2});
+  //     res.status(200).send({recommended: recommendedArticleArr, other: responseArr2});
 
-    } else {
+  //   } else {
 
-      let array = biasCalc.sourcesNeeded(bias, count);
+  //     let array = biasCalc.sourcesNeeded(bias, count);
 
-      console.log(array)
+  //     console.log(array)
 
-      array.forEach((num) => {
-        let index = responseArr2.findIndex(element => element.ratingNum === num);
+  //     array.forEach((num) => {
+  //       let index = responseArr2.findIndex(element => element.ratingNum === num);
 
-        let article = responseArr2.splice(index, 1)
+  //       let article = responseArr2.splice(index, 1)
 
-        tempArr.push(article[0])
+  //       tempArr.push(article[0])
 
-      });
+  //     });
 
-      // console.log(tempArr)
+  //     // console.log(tempArr)
 
-      let centerArr = [];
-      let rightCenterArr = [];
-      let leftCenterArr = [];
-      let rightArr = [];
-      let leftArr = [];
+  //     let centerArr = [];
+  //     let rightCenterArr = [];
+  //     let leftCenterArr = [];
+  //     let rightArr = [];
+  //     let leftArr = [];
 
-      //looping over mutated responseArr1 (excluding user recommended articles based on bias number).
+  //     //looping over mutated responseArr1 (excluding user recommended articles based on bias number).
 
-      responseArr2.forEach(article => {
+  //     responseArr2.forEach(article => {
 
-        switch (article.ratingNum) {
-          case 1:
-          leftArr.push(article)
-          break;
+  //       switch (article.ratingNum) {
+  //         case 1:
+  //         leftArr.push(article)
+  //         break;
 
-          case 2:
-          leftCenterArr.push(article)
-          break;
+  //         case 2:
+  //         leftCenterArr.push(article)
+  //         break;
 
-          case 3:
-            centerArr.push(article)
-            break;
-          case 4:
-            rightCenterArr.push(article)
-            break;
-          case 5:
-            rightArr.push(article)
-          break;
-        }
-      })
+  //         case 3:
+  //           centerArr.push(article)
+  //           break;
+  //         case 4:
+  //           rightCenterArr.push(article)
+  //           break;
+  //         case 5:
+  //           rightArr.push(article)
+  //         break;
+  //       }
+  //     })
 
-      let tempArr2=[]
+  //     let tempArr2=[]
 
-      for (let i = 0; i < centerArr.length; i++) {
-        tempArr2.push(
-          centerArr[i],           //3
-          rightCenterArr[i],      //4
-          leftCenterArr[i],       //2
-          rightArr[i],            //5
-          leftArr[i]              //1
-        );
-      }
+  //     for (let i = 0; i < centerArr.length; i++) {
+  //       tempArr2.push(
+  //         centerArr[i],           //3
+  //         rightCenterArr[i],      //4
+  //         leftCenterArr[i],       //2
+  //         rightArr[i],            //5
+  //         leftArr[i]              //1
+  //       );
+  //     }
 
-      // console.log(tempArr)
+  //     // console.log(tempArr)
 
-      let tempArr3 = tempArr2.filter(article => article !== undefined)
+  //     let tempArr3 = tempArr2.filter(article => article !== undefined)
 
-      let responseArr3 = tempArr.concat(tempArr3)
+  //     let responseArr3 = tempArr.concat(tempArr3)
 
-      recommendedArticleArr = responseArr3.splice(0,12)
+  //     recommendedArticleArr = responseArr3.splice(0,12)
 
 
-      res.status(200).send({recommended: recommendedArticleArr, other: responseArr3});
+  //     res.status(200).send({recommended: recommendedArticleArr, other: responseArr3});
 
-    }
+  //   }
 
   //  let arr1 = [
   //   {

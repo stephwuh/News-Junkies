@@ -1,6 +1,6 @@
-import React, { useState, createContext, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { GlobalContext } from "../GlobalState";
-
+import {useNavigate} from 'react-router-dom';
 
 import Box from "@mui/material/Box";
 import AppBar from "@mui/material/AppBar";
@@ -13,17 +13,22 @@ import MenuItem from "@mui/material/MenuItem";
 
 
 
-const NavBar = (props) => {
+const NavBar = () => {
     const [anchorEl, setAnchorEl] = useState(false);
     const {state, dispatch} = useContext(GlobalContext)
+
+    let navigate = useNavigate();
 
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
       setAnchorEl(event.currentTarget);
     };
+    
     const handleClose = (event) => {
       setAnchorEl(false);
       dispatch({type: "update category", payload: event.target.getAttribute('id') })
+      navigate('/my-news');
+      
     };
 
     

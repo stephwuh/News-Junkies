@@ -26,7 +26,7 @@ const Title = styled(Typography)({
 
 });
 
-const MyNews = (props) => {
+const MyNews = () => {
   const [searchState, setSearchState] = useState(null);
   const [headlineState, setHeadlineState] = useState(null);
 
@@ -41,9 +41,9 @@ const MyNews = (props) => {
         // setSearchState(response.data);
 
         const response = await axios.get(
-          `http://localhost:5050/api/my-news/${sessionStorage.getItem(
+          `http://localhost:5050/api/my-news/?userId=${sessionStorage.getItem(
             "userId"
-          )}`
+          )}&category=${context.state.category}`
         );
 
         setHeadlineState(response.data);
