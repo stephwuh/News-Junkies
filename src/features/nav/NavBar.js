@@ -1,5 +1,5 @@
-import React, { useState, createContext } from "react";
-
+import React, { useState, createContext, useEffect, useContext } from "react";
+import { GlobalContext } from "../GlobalState";
 
 
 import Box from "@mui/material/Box";
@@ -11,10 +11,11 @@ import Container from "@mui/material/Container";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 
-export const ConfigContext = createContext()
+
 
 const NavBar = (props) => {
     const [anchorEl, setAnchorEl] = useState(false);
+    const {state, dispatch} = useContext(GlobalContext)
 
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -22,8 +23,10 @@ const NavBar = (props) => {
     };
     const handleClose = (event) => {
       setAnchorEl(false);
-      props.category(event.target.getAttribute('id'))
+      dispatch({type: "update category", payload: event.target.getAttribute('id') })
     };
+
+    
 
 
   return (

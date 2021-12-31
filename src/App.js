@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React from 'react'
 import './App.css';
 
 import NewsSettings from './features/newsSettings/NewsSettings.js';
@@ -12,30 +12,25 @@ import {Routes, Route} from 'react-router-dom';
 import theme from './features/misc/theme.js'
 import { ThemeProvider } from '@mui/material/styles';
 
+import {GlobalProvider} from './features/GlobalState.js'
+
 
 
 function App() {
-
-  const [category, setCategory] = useState('latest')
-
-  const handleCategory = (category) => {
-
-    setCategory(category)
-
-  }
-
 
   return (
     <div>
 
       <ThemeProvider theme={theme}>
-        <NavBar category={handleCategory}/>
-        <Routes>
-          <Route path='/sign-in' element={<SignIn/>} />
-          <Route path='/sign-up' element={<Signup/>} />
-          <Route path='/settings' element={<NewsSettings/>}/>
-          <Route path='/my-news' element={<MyNews category={category}/>} />
-        </Routes>
+        <GlobalProvider>
+          <NavBar/>
+          <Routes>
+            <Route path='/sign-in' element={<SignIn/>} />
+            <Route path='/sign-up' element={<Signup/>} />
+            <Route path='/settings' element={<NewsSettings/>}/>
+            <Route path='/my-news' element={<MyNews/>} />
+          </Routes>
+        </GlobalProvider>
       </ThemeProvider>
       
     </div>

@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { GlobalContext } from "../GlobalState";
 import axios from "axios";
 
 import './styling/myNews.css'
@@ -28,6 +29,10 @@ const Title = styled(Typography)({
 const MyNews = (props) => {
   const [searchState, setSearchState] = useState(null);
   const [headlineState, setHeadlineState] = useState(null);
+
+  const context = useContext(GlobalContext)
+
+  console.log(context.state.category)
 
   useEffect(() => {
     const getNewsAPI = async () => {
