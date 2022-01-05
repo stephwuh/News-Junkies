@@ -12,6 +12,8 @@ import "../.././App.css";
 
 import NewsList from "./NewsList";
 
+//make sure to limit users from choosing more than 10 sources per bias category
+
 const NewsSettings = () => {
   const [sourceState, setSourceState] = useState([]);
 

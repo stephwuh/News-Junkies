@@ -46,34 +46,34 @@ export default function NewsCardShort(props) {
       break;
   }
 
-  // console.log(props.source.title)
+  // console.log(props.source.image["thumbnail"]["contentUrl"])
 
   return (
     <CardCustom>
-      {props.source.urlToImage && (
+      {/* {props.source.image.contentUrl && (
         <CardMedia
           component="img"
-          height="140"
-          image={props.source.urlToImage}
+          height="140"  
+          image={props.source.image.contentUrl}
           alt="article image"
         />
-      )}
+      )} */}
 
       <CardContent sx={{ pb: 0, textAlign: "center" }}>
         <TitleLink href={props.source.url} target="_blank" rel="noopener">
           <h5 className="news-card-title">
-            {props.source.title ? props.source.title : "No Title"}
+            {props.source.name ? props.source.name : "No Title"}
           </h5>
         </TitleLink>
-        {!props.source.urlToImage && (
-          <Typography
-            sx={{ color: "primary.main", fontSize: 12, fontWeight: "bold" }}
-          >
-            {props.source.description}
-          </Typography>
-        )}
+          {/* {!props.source.image.contentUrl && (
+            <Typography
+              sx={{ color: "primary.main", fontSize: 12, fontWeight: "bold" }}
+            >
+              {props.source.description}
+            </Typography>
+          )} */}
         <Source>
-          {props.source.source.name}
+          {props.source.provider[0].name}
           <img
             src={imageSrc}
             alt="bias image"

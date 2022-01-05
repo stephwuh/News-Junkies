@@ -14,9 +14,10 @@ const sequelize = require("../database/sequelizeConfig");
 
 const NewsAPI = require("newsapi");
 
-const biasCalc = require("./biasCalc.js");
+const biasCalc = require("./modules/biasCalc.js");
 
-const newsapi = new NewsAPI("ff88b865f6204634b0276875d1dac794");
+const bingApi = require("./modules/bingApi.js")
+
 
 app.use(cors());
 app.use(express.json());
@@ -83,31 +84,22 @@ app.post("/api/postUserSource", async (req, res) => {
   }
 });
 
-app.get("/api/my-news/:userId", async (req, res) => {
+app.get("/api/my-news/", async (req, res) => {
 
 
-    let userId = req.params.userId;
+    // let userId = req.params.userId;
 
-  //   let query;
+    // let query;
 
-  //   let bias;
-  //   let count;
+    // let bias;
+    // let count;
 
-  //   let centerArr = [];
-  //   let rightCenterArr = [];
-  //   let leftCenterArr = [];
-  //   let rightArr = [];
-  //   let leftArr = [];
+    console.log(req.query)
 
 
+    // console.log(await bingApi.search('npr', 20))
 
-  //   //  let  response = await newsapi.v2.everything({
-  //   //     domains: "huffpost.com",
-  //   //     language: "en",
-  //   //     pageSize: 15,
-  //   //   });
 
-  //   //   console.log(response)
 
   //   //database inner join query to get user source and news info
 
@@ -129,6 +121,8 @@ app.get("/api/my-news/:userId", async (req, res) => {
   //   } catch (error) {
   //     res.status(500).send("database error");
   //   }
+
+  //   // console.log(query)
 
   //   //figuring out how many sources there are per political bias
   //   //so when we make the api call per source we dont get a lopsided amount of articles 
@@ -160,28 +154,26 @@ app.get("/api/my-news/:userId", async (req, res) => {
   //   3) I push the news articles into the appropriate object.
   // */
 
+  //   let centerArr = [];
+  //   let rightCenterArr = [];
+  //   let leftCenterArr = [];
+  //   let rightArr = [];
+  //   let leftArr = [];
+
   //   for (let i = 0; i < query.length; i++) {
   //     let response;
+  //     let searchTerm;
+  //     let numOfArticles;
 
   //     switch (query[i].dataValues.rating) {
   //       case "left":
-  //         //make repeating if else statement into module
+          
+  //         searchTerm = query[i].dataValues.name
+  //         numOfArticles = Math.floor(10/sourceObj["left"])
 
-  //         if (query[i].dataValues.searchTerm) {
-  //           response = await newsapi.v2.everything({
-  //             sources: query[i].dataValues.searchTerm,
-  //             language: "en",
-  //             pageSize: Math.floor(20/sourceObj["left"]),
-  //           });
-  //         } else {
-  //           response = await newsapi.v2.everything({
-  //             domains: query[i].dataValues.url,
-  //             language: "en",
-  //             pageSize: Math.floor(20/sourceObj["left"]),
-  //           });
-  //         }
+  //         response = await bingApi.search(searchTerm, numOfArticles)
 
-  //         leftArr = [...response.articles];
+  //         leftArr = [...leftArr, ...response];
 
   //         for (let y = 0; y < leftArr.length; y++) {
   //           leftArr[y].ratingNum = 1;
@@ -191,21 +183,13 @@ app.get("/api/my-news/:userId", async (req, res) => {
   //         break;
 
   //       case "left-center":
-  //         if (query[i].dataValues.searchTerm) {
-  //           response = await newsapi.v2.everything({
-  //             sources: query[i].dataValues.searchTerm,
-  //             language: "en",
-  //             pageSize: Math.floor(20/sourceObj["left-center"]),
-  //           });
-  //         } else {
-  //           response = await newsapi.v2.everything({
-  //             domains: query[i].dataValues.url,
-  //             language: "en",
-  //             pageSize: Math.floor(20/sourceObj["left-center"]),
-  //           });
-  //         }
+         
+  //         searchTerm = query[i].dataValues.name
+  //         numOfArticles = Math.floor(10/sourceObj["left-center"])
 
-  //         leftCenterArr = [...response.articles];
+  //         response = await bingApi.search(searchTerm, numOfArticles)
+
+  //         leftCenterArr = [...leftCenterArr, ...response];
 
   //         for (let y = 0; y < leftCenterArr.length; y++) {
   //           leftCenterArr[y].ratingNum = 2;
@@ -213,22 +197,16 @@ app.get("/api/my-news/:userId", async (req, res) => {
   //         }
 
   //         break;
-  //       case "center":
-  //         if (query[i].dataValues.searchTerm) {
-  //           response = await newsapi.v2.everything({
-  //             sources: query[i].dataValues.searchTerm,
-  //             language: "en",
-  //             pageSize: Math.floor(20/sourceObj["center"]),
-  //           });
-  //         } else {
-  //           response = await newsapi.v2.everything({
-  //             domains: query[i].dataValues.url,
-  //             language: "en",
-  //             pageSize: Math.floor(20/sourceObj["center"]),
-  //           });
-  //         }
 
-  //         centerArr = [...response.articles];
+
+  //       case "center":
+
+  //         searchTerm = query[i].dataValues.name
+  //         numOfArticles = Math.floor(10/sourceObj["center"])
+
+  //         response = await bingApi.search(searchTerm, numOfArticles)
+
+  //         centerArr = [...centerArr, ...response];
 
   //         for (let y = 0; y < centerArr.length; y++) {
   //           centerArr[y].ratingNum = 3;
@@ -236,22 +214,17 @@ app.get("/api/my-news/:userId", async (req, res) => {
   //         }
 
   //         break;
-  //       case "right-center":
-  //         if (query[i].dataValues.searchTerm) {
-  //           response = await newsapi.v2.everything({
-  //             sources: query[i].dataValues.searchTerm,
-  //             language: "en",
-  //             pageSize: Math.floor(20/sourceObj["right-center"]),
-  //           });
-  //         } else {
-  //           response = await newsapi.v2.everything({
-  //             domains: query[i].dataValues.url,
-  //             language: "en",
-  //             pageSize: Math.floor(20/sourceObj["right-center"]),
-  //           });
-  //         }
 
-  //         rightCenterArr = [...response.articles];
+
+  //       case "right-center":
+
+  //         searchTerm = query[i].dataValues.name
+  //         numOfArticles = Math.floor(10/sourceObj["right-center"])
+
+  //         response = await bingApi.search(searchTerm, numOfArticles)
+
+
+  //         rightCenterArr = [...rightCenterArr, ...response];
 
   //         for (let y = 0; y < rightCenterArr.length; y++) {
   //           rightCenterArr[y].ratingNum = 4;
@@ -261,21 +234,13 @@ app.get("/api/my-news/:userId", async (req, res) => {
   //         break;
 
   //       case "right":
-  //         if (query[i].dataValues.searchTerm) {
-  //           response = await newsapi.v2.everything({
-  //             sources: query[i].dataValues.searchTerm,
-  //             language: "en",
-  //             pageSize: Math.floor(20/sourceObj["right"]),
-  //           });
-  //         } else {
-  //           response = await newsapi.v2.everything({
-  //             domains: query[i].dataValues.url,
-  //             language: "en",
-  //             pageSize: Math.floor(20/sourceObj["right"]),
-  //           });
-  //         }
 
-  //         rightArr = [...response.articles];
+  //         searchTerm = query[i].dataValues.name
+  //         numOfArticles = Math.floor(10/sourceObj["right"])
+
+  //         response = await bingApi.search(searchTerm, numOfArticles)
+
+  //         rightArr = [...rightArr, ...response];
 
   //         for (let y = 0; y < rightArr.length; y++) {
   //           rightArr[y].ratingNum = 5;
@@ -284,19 +249,6 @@ app.get("/api/my-news/:userId", async (req, res) => {
   //     }
   //   }
 
-  //   // console.log(leftArr)
-  //   // console.log(leftCenterArr)
-  //   // console.log(centerArr)
-  //   // console.log(rightCenterArr)
-  //   // console.log(leftArr)
-
-  //   // let centerArr = [];
-  //   // let rightCenterArr = [];
-  //   // let leftCenterArr = [];
-  //   // let rightArr = [];
-  //   // let leftArr = [];
-
-  //   // console.log(leftArr)
 
   //   let responseArr1 = [];
 
@@ -313,14 +265,15 @@ app.get("/api/my-news/:userId", async (req, res) => {
   //   }
 
   //     //need to filter out articles that are null because sometimes
-  //     //news API returns less articles than the number you request
+  //     //bing news API returns less articles than the number of articles you request
 
+  //   let responseArr2 = responseArr1.filter(article => article !== undefined)
+    
   //   let tempArr = [];
 
   //   let recommendedArticleArr
     
-  //   let responseArr2 = responseArr1.filter(article => article !== undefined)
-
+   
   //   if (bias === 3) {
 
   //     recommendedArticleArr = responseArr2.splice(0,12)
@@ -328,8 +281,6 @@ app.get("/api/my-news/:userId", async (req, res) => {
   //     res.status(200).send({recommended: recommendedArticleArr, other: responseArr2});
 
   //   } else {
-
-      
 
   //     let array = biasCalc.sourcesNeeded(bias, count);
 
@@ -402,376 +353,376 @@ app.get("/api/my-news/:userId", async (req, res) => {
 
   //   }
 
-   let arr1 = [
-    {
-      source: { id: null, name: "Vox" },
-      author: "Tasha Eichenseher",
-      title: "Why more psychiatrists think mindfulness can help treat ADHD",
-      description:
-        "A 1-minute mindfulness practice helped settle my ADHD-addled mind.",
-      url: "https://www.vox.com/22847150/adhd-treatment-mindfulness-adderall",
-      urlToImage:
-        "https://cdn.vox-cdn.com/thumbor/cEXWhXfN0iLcjvg3xX6sQ3JYM-4=/0x36:1800x978/fit-in/1200x630/cdn.vox-cdn.com/uploads/chorus_asset/file/23123176/mindfulness_adhd_board_2.jpg",
-      publishedAt: "2021-12-27T12:35:00Z",
-      content:
-        "Christina Animashaun/Vox\r\n" +
-        "\n" +
-        " \n" +
-        "\n" +
-        "\n" +
-        " A 1-minute mindfulness practice helped settle my ADHD-addled mind. \n" +
-        "One morning this summer, I sat at my desk feeling restlessness boil inside me. I’d recently moved f… [+11468 chars]",
-      ratingNum: 1,
-      rating: "left",
-    },
-    {
-      source: {
-        id: "the-wall-street-journal",
-        name: "The Wall Street Journal",
-      },
-      author: "Donna Abdulaziz",
-      title: "With Rappers, Race Cars and Raves, Saudi Learns How to Party...",
-      description:
-        "With Rappers, Race Cars and Raves, Saudi Learns How to Party...\r\n" +
-        "\n" +
-        " \n" +
-        " \n" +
-        " \n" +
-        " (Third column, 11th story, link)\r\n" +
-        "\n" +
-        " \r\n" +
-        "\n" +
-        " \r\n" +
-        "\n" +
-        " \n" +
-        " Related stories:Kingdom Seeks to Become Cultural Hub...\r\n" +
-        "\n" +
-        " \r\n" +
-        "\n" +
-        " \n" +
-        " \n" +
-        " Drudge Report Feed needs your support!   Become a Patron",
-      url: "https://www.wsj.com/articles/with-rappers-race-cars-and-raves-saudi-arabia-learns-how-to-party-11640610116",
-      urlToImage: "https://images.wsj.net/im-458298/social",
-      publishedAt: "2021-12-27T13:19:39Z",
-      content:
-        "RIYADH, Saudi ArabiaThis conservative Islamic kingdom is rapidly trying to ease its staid social norms, allowing women to drive and travel freely in recent years, opening doors to tourists and tolera… [+7332 chars]",
-      ratingNum: 3,
-      rating: "center",
-    },
-    {
-      source: { id: null, name: "The Center Square" },
-      author: "Bruce Walker | The Center Square",
-      title:
-        "Michigan's Whitmer signs off on $409 million small-business relief program - Iosco County News Herald",
-      description:
-        "(The Center Square) – The third time was a charm for a small-business relief provision of Senate Bill 85, which was signed Monday by Michigan Gov. Gretchen Whitmer.",
-      url: "https://www.thecentersquare.com/michigan/michigans-whitmer-signs-off-on-409-million-small-business-relief-program/article_bc0f4f66-61d4-11ec-bdb5-7b1d3ba90a35.html",
-      urlToImage:
-        "https://bloximages.chicago2.vip.townnews.com/iosconews.com/content/tncms/assets/v3/editorial/1/51/151e4718-3cf1-5bdf-a761-e37911dad5d3/604697df8250a.image.jpg?crop=1662%2C873%2C0%2C187&resize=1200%2C630&order=crop%2Cresize",
-      publishedAt: "2021-12-20T21:44:00Z",
-      content:
-        "(The Center Square) The third time was a charm for a small-business relief provision of Senate Bill 85, which was signed Monday by Michigan Gov. Gretchen Whitmer.\r\n" +
-        "A House version of the bill, House … [+1760 chars]",
-      ratingNum: 4,
-      rating: "right center",
-    },
-    {
-      source: { id: "the-washington-post", name: "The Washington Post" },
-      author: "Ruby Mellen, Siobhán O'Grady, Ezzatullah Mehrdad, Júlia Ledur",
-      title: "Unsettled: Searching for home after escaping the Taliban",
-      description:
-        "From Uganda to Mexico, Afghans who escaped the Taliban are spread across more than three dozen countries, searching for stability and a new place to call home.",
-      url: "https://www.washingtonpost.com/world/interactive/2021/afghan-taliban-escape-resettlement/",
-      urlToImage:
-        "https://www.washingtonpost.com/wp-apps/imrs.php?src=https://arc-anglerfish-washpost-prod-washpost.s3.amazonaws.com/public/RZNFQYSZZEI6ZA4WKVJL55K4HQ.jpg&w=1200",
-      publishedAt: "2021-12-27T14:00:28Z",
-      content:
-        "Her departure from Kabul reminded her of some zombie movie, the young woman said. It was an experience she could describe only as dehumanizing, terrifying and very traumatizing.\r\n" +
-        "When she woke up in … [+11555 chars]",
-      ratingNum: 2,
-      rating: "left center",
-    },
-    {
-      source: { id: null, name: "The Federalist" },
-      author: "Christopher Bedford",
-      title: "How Advent Teaches Us, Amid Sorrow, To Rejoice",
-      description:
-        "Today is the last day of Advent. What does the church teach us about sadness and joy? Just consider some of her hymns and scriptures.",
-      url: "https://thefederalist.com/2021/12/24/how-advent-teaches-us-amid-sorrow-to-rejoice/",
-      urlToImage:
-        "https://thefederalist.com/wp-content/uploads/2021/12/Gerard_van_Honthorst_-_Adoration_of_the_Shepherds_1622-e1640293118745.jpg",
-      publishedAt: "2021-12-24T11:46:57Z",
-      content:
-        "“Why are these Christmas songs so sad?”\r\n" +
-        "The question came from a little girl named Hazel. She’d been raised in a different Christian tradition, with drums, guitars, and applause. But that Sunday of … [+4184 chars]",
-      ratingNum: 5,
-      rating: "right",
-    },
-    {
-      source: { id: null, name: "The Federalist" },
-      author: "Christopher Bedford",
-      title: "How Advent Teaches Us, Amid Sorrow, To Rejoice",
-      description:
-        "Today is the last day of Advent. What does the church teach us about sadness and joy? Just consider some of her hymns and scriptures.",
-      url: "https://thefederalist.com/2021/12/24/how-advent-teaches-us-amid-sorrow-to-rejoice/",
-      urlToImage:
-        "https://thefederalist.com/wp-content/uploads/2021/12/Gerard_van_Honthorst_-_Adoration_of_the_Shepherds_1622-e1640293118745.jpg",
-      publishedAt: "2021-12-24T11:46:57Z",
-      content:
-        "“Why are these Christmas songs so sad?”\r\n" +
-        "The question came from a little girl named Hazel. She’d been raised in a different Christian tradition, with drums, guitars, and applause. But that Sunday of … [+4184 chars]",
-      ratingNum: 5,
-      rating: "right",
-    },
-    {
-      source: { id: null, name: "Vox" },
-      author: "Tasha Eichenseher",
-      title: "Why more psychiatrists think mindfulness can help treat ADHD",
-      description:
-        "A 1-minute mindfulness practice helped settle my ADHD-addled mind.",
-      url: "https://www.vox.com/22847150/adhd-treatment-mindfulness-adderall",
-      urlToImage:
-        "https://cdn.vox-cdn.com/thumbor/cEXWhXfN0iLcjvg3xX6sQ3JYM-4=/0x36:1800x978/fit-in/1200x630/cdn.vox-cdn.com/uploads/chorus_asset/file/23123176/mindfulness_adhd_board_2.jpg",
-      publishedAt: "2021-12-27T12:35:00Z",
-      content:
-        "Christina Animashaun/Vox\r\n" +
-        "\n" +
-        " \n" +
-        "\n" +
-        "\n" +
-        " A 1-minute mindfulness practice helped settle my ADHD-addled mind. \n" +
-        "One morning this summer, I sat at my desk feeling restlessness boil inside me. I’d recently moved f… [+11468 chars]",
-      ratingNum: 1,
-      rating: "left",
-    },
-    {
-      source: {
-        id: "the-wall-street-journal",
-        name: "The Wall Street Journal",
-      },
-      author: "Donna Abdulaziz",
-      title: "With Rappers, Race Cars and Raves, Saudi Learns How to Party...",
-      description:
-        "With Rappers, Race Cars and Raves, Saudi Learns How to Party...\r\n" +
-        "\n" +
-        " \n" +
-        " \n" +
-        " \n" +
-        " (Third column, 11th story, link)\r\n" +
-        "\n" +
-        " \r\n" +
-        "\n" +
-        " \r\n" +
-        "\n" +
-        " \n" +
-        " Related stories:Kingdom Seeks to Become Cultural Hub...\r\n" +
-        "\n" +
-        " \r\n" +
-        "\n" +
-        " \n" +
-        " \n" +
-        " Drudge Report Feed needs your support!   Become a Patron",
-      url: "https://www.wsj.com/articles/with-rappers-race-cars-and-raves-saudi-arabia-learns-how-to-party-11640610116",
-      urlToImage: "https://images.wsj.net/im-458298/social",
-      publishedAt: "2021-12-27T13:19:39Z",
-      content:
-        "RIYADH, Saudi ArabiaThis conservative Islamic kingdom is rapidly trying to ease its staid social norms, allowing women to drive and travel freely in recent years, opening doors to tourists and tolera… [+7332 chars]",
-      ratingNum: 3,
-      rating: "center",
-    },
-    {
-      source: { id: null, name: "The Center Square" },
-      author: "Bruce Walker | The Center Square",
-      title:
-        "Michigan's Whitmer signs off on $409 million small-business relief program - Iosco County News Herald",
-      description:
-        "(The Center Square) – The third time was a charm for a small-business relief provision of Senate Bill 85, which was signed Monday by Michigan Gov. Gretchen Whitmer.",
-      url: "https://www.thecentersquare.com/michigan/michigans-whitmer-signs-off-on-409-million-small-business-relief-program/article_bc0f4f66-61d4-11ec-bdb5-7b1d3ba90a35.html",
-      urlToImage:
-        "https://bloximages.chicago2.vip.townnews.com/iosconews.com/content/tncms/assets/v3/editorial/1/51/151e4718-3cf1-5bdf-a761-e37911dad5d3/604697df8250a.image.jpg?crop=1662%2C873%2C0%2C187&resize=1200%2C630&order=crop%2Cresize",
-      publishedAt: "2021-12-20T21:44:00Z",
-      content:
-        "(The Center Square) The third time was a charm for a small-business relief provision of Senate Bill 85, which was signed Monday by Michigan Gov. Gretchen Whitmer.\r\n" +
-        "A House version of the bill, House … [+1760 chars]",
-      ratingNum: 4,
-      rating: "right center",
-    },
-    {
-      source: { id: "the-washington-post", name: "The Washington Post" },
-      author: "Ruby Mellen, Siobhán O'Grady, Ezzatullah Mehrdad, Júlia Ledur",
-      title: "Unsettled: Searching for home after escaping the Taliban",
-      description:
-        "From Uganda to Mexico, Afghans who escaped the Taliban are spread across more than three dozen countries, searching for stability and a new place to call home.",
-      url: "https://www.washingtonpost.com/world/interactive/2021/afghan-taliban-escape-resettlement/",
-      urlToImage:
-        "https://www.washingtonpost.com/wp-apps/imrs.php?src=https://arc-anglerfish-washpost-prod-washpost.s3.amazonaws.com/public/RZNFQYSZZEI6ZA4WKVJL55K4HQ.jpg&w=1200",
-      publishedAt: "2021-12-27T14:00:28Z",
-      content:
-        "Her departure from Kabul reminded her of some zombie movie, the young woman said. It was an experience she could describe only as dehumanizing, terrifying and very traumatizing.\r\n" +
-        "When she woke up in … [+11555 chars]",
-      ratingNum: 2,
-      rating: "left center",
-    },
-    {
-      source: { id: null, name: "The Federalist" },
-      author: "Christopher Bedford",
-      title: "How Advent Teaches Us, Amid Sorrow, To Rejoice",
-      description:
-        "Today is the last day of Advent. What does the church teach us about sadness and joy? Just consider some of her hymns and scriptures.",
-      url: "https://thefederalist.com/2021/12/24/how-advent-teaches-us-amid-sorrow-to-rejoice/",
-      urlToImage:
-        "https://thefederalist.com/wp-content/uploads/2021/12/Gerard_van_Honthorst_-_Adoration_of_the_Shepherds_1622-e1640293118745.jpg",
-      publishedAt: "2021-12-24T11:46:57Z",
-      content:
-        "“Why are these Christmas songs so sad?”\r\n" +
-        "The question came from a little girl named Hazel. She’d been raised in a different Christian tradition, with drums, guitars, and applause. But that Sunday of … [+4184 chars]",
-      ratingNum: 5,
-      rating: "right",
-    },
-    {
-      source: { id: null, name: "The Federalist" },
-      author: "Christopher Bedford",
-      title: "How Advent Teaches Us, Amid Sorrow, To Rejoice",
-      description:
-        "Today is the last day of Advent. What does the church teach us about sadness and joy? Just consider some of her hymns and scriptures.",
-      url: "https://thefederalist.com/2021/12/24/how-advent-teaches-us-amid-sorrow-to-rejoice/",
-      urlToImage:
-        "https://thefederalist.com/wp-content/uploads/2021/12/Gerard_van_Honthorst_-_Adoration_of_the_Shepherds_1622-e1640293118745.jpg",
-      publishedAt: "2021-12-24T11:46:57Z",
-      content:
-        "“Why are these Christmas songs so sad?”\r\n" +
-        "The question came from a little girl named Hazel. She’d been raised in a different Christian tradition, with drums, guitars, and applause. But that Sunday of … [+4184 chars]",
-      ratingNum: 5,
-      rating: "right",
-    }
-  ];
+  //  let arr1 = [
+  //   {
+  //     source: { id: null, name: "Vox" },
+  //     author: "Tasha Eichenseher",
+  //     title: "Why more psychiatrists think mindfulness can help treat ADHD",
+  //     description:
+  //       "A 1-minute mindfulness practice helped settle my ADHD-addled mind.",
+  //     url: "https://www.vox.com/22847150/adhd-treatment-mindfulness-adderall",
+  //     urlToImage:
+  //       "https://cdn.vox-cdn.com/thumbor/cEXWhXfN0iLcjvg3xX6sQ3JYM-4=/0x36:1800x978/fit-in/1200x630/cdn.vox-cdn.com/uploads/chorus_asset/file/23123176/mindfulness_adhd_board_2.jpg",
+  //     publishedAt: "2021-12-27T12:35:00Z",
+  //     content:
+  //       "Christina Animashaun/Vox\r\n" +
+  //       "\n" +
+  //       " \n" +
+  //       "\n" +
+  //       "\n" +
+  //       " A 1-minute mindfulness practice helped settle my ADHD-addled mind. \n" +
+  //       "One morning this summer, I sat at my desk feeling restlessness boil inside me. I’d recently moved f… [+11468 chars]",
+  //     ratingNum: 1,
+  //     rating: "left",
+  //   },
+  //   {
+  //     source: {
+  //       id: "the-wall-street-journal",
+  //       name: "The Wall Street Journal",
+  //     },
+  //     author: "Donna Abdulaziz",
+  //     title: "With Rappers, Race Cars and Raves, Saudi Learns How to Party...",
+  //     description:
+  //       "With Rappers, Race Cars and Raves, Saudi Learns How to Party...\r\n" +
+  //       "\n" +
+  //       " \n" +
+  //       " \n" +
+  //       " \n" +
+  //       " (Third column, 11th story, link)\r\n" +
+  //       "\n" +
+  //       " \r\n" +
+  //       "\n" +
+  //       " \r\n" +
+  //       "\n" +
+  //       " \n" +
+  //       " Related stories:Kingdom Seeks to Become Cultural Hub...\r\n" +
+  //       "\n" +
+  //       " \r\n" +
+  //       "\n" +
+  //       " \n" +
+  //       " \n" +
+  //       " Drudge Report Feed needs your support!   Become a Patron",
+  //     url: "https://www.wsj.com/articles/with-rappers-race-cars-and-raves-saudi-arabia-learns-how-to-party-11640610116",
+  //     urlToImage: "https://images.wsj.net/im-458298/social",
+  //     publishedAt: "2021-12-27T13:19:39Z",
+  //     content:
+  //       "RIYADH, Saudi ArabiaThis conservative Islamic kingdom is rapidly trying to ease its staid social norms, allowing women to drive and travel freely in recent years, opening doors to tourists and tolera… [+7332 chars]",
+  //     ratingNum: 3,
+  //     rating: "center",
+  //   },
+  //   {
+  //     source: { id: null, name: "The Center Square" },
+  //     author: "Bruce Walker | The Center Square",
+  //     title:
+  //       "Michigan's Whitmer signs off on $409 million small-business relief program - Iosco County News Herald",
+  //     description:
+  //       "(The Center Square) – The third time was a charm for a small-business relief provision of Senate Bill 85, which was signed Monday by Michigan Gov. Gretchen Whitmer.",
+  //     url: "https://www.thecentersquare.com/michigan/michigans-whitmer-signs-off-on-409-million-small-business-relief-program/article_bc0f4f66-61d4-11ec-bdb5-7b1d3ba90a35.html",
+  //     urlToImage:
+  //       "https://bloximages.chicago2.vip.townnews.com/iosconews.com/content/tncms/assets/v3/editorial/1/51/151e4718-3cf1-5bdf-a761-e37911dad5d3/604697df8250a.image.jpg?crop=1662%2C873%2C0%2C187&resize=1200%2C630&order=crop%2Cresize",
+  //     publishedAt: "2021-12-20T21:44:00Z",
+  //     content:
+  //       "(The Center Square) The third time was a charm for a small-business relief provision of Senate Bill 85, which was signed Monday by Michigan Gov. Gretchen Whitmer.\r\n" +
+  //       "A House version of the bill, House … [+1760 chars]",
+  //     ratingNum: 4,
+  //     rating: "right center",
+  //   },
+  //   {
+  //     source: { id: "the-washington-post", name: "The Washington Post" },
+  //     author: "Ruby Mellen, Siobhán O'Grady, Ezzatullah Mehrdad, Júlia Ledur",
+  //     title: "Unsettled: Searching for home after escaping the Taliban",
+  //     description:
+  //       "From Uganda to Mexico, Afghans who escaped the Taliban are spread across more than three dozen countries, searching for stability and a new place to call home.",
+  //     url: "https://www.washingtonpost.com/world/interactive/2021/afghan-taliban-escape-resettlement/",
+  //     urlToImage:
+  //       "https://www.washingtonpost.com/wp-apps/imrs.php?src=https://arc-anglerfish-washpost-prod-washpost.s3.amazonaws.com/public/RZNFQYSZZEI6ZA4WKVJL55K4HQ.jpg&w=1200",
+  //     publishedAt: "2021-12-27T14:00:28Z",
+  //     content:
+  //       "Her departure from Kabul reminded her of some zombie movie, the young woman said. It was an experience she could describe only as dehumanizing, terrifying and very traumatizing.\r\n" +
+  //       "When she woke up in … [+11555 chars]",
+  //     ratingNum: 2,
+  //     rating: "left center",
+  //   },
+  //   {
+  //     source: { id: null, name: "The Federalist" },
+  //     author: "Christopher Bedford",
+  //     title: "How Advent Teaches Us, Amid Sorrow, To Rejoice",
+  //     description:
+  //       "Today is the last day of Advent. What does the church teach us about sadness and joy? Just consider some of her hymns and scriptures.",
+  //     url: "https://thefederalist.com/2021/12/24/how-advent-teaches-us-amid-sorrow-to-rejoice/",
+  //     urlToImage:
+  //       "https://thefederalist.com/wp-content/uploads/2021/12/Gerard_van_Honthorst_-_Adoration_of_the_Shepherds_1622-e1640293118745.jpg",
+  //     publishedAt: "2021-12-24T11:46:57Z",
+  //     content:
+  //       "“Why are these Christmas songs so sad?”\r\n" +
+  //       "The question came from a little girl named Hazel. She’d been raised in a different Christian tradition, with drums, guitars, and applause. But that Sunday of … [+4184 chars]",
+  //     ratingNum: 5,
+  //     rating: "right",
+  //   },
+  //   {
+  //     source: { id: null, name: "The Federalist" },
+  //     author: "Christopher Bedford",
+  //     title: "How Advent Teaches Us, Amid Sorrow, To Rejoice",
+  //     description:
+  //       "Today is the last day of Advent. What does the church teach us about sadness and joy? Just consider some of her hymns and scriptures.",
+  //     url: "https://thefederalist.com/2021/12/24/how-advent-teaches-us-amid-sorrow-to-rejoice/",
+  //     urlToImage:
+  //       "https://thefederalist.com/wp-content/uploads/2021/12/Gerard_van_Honthorst_-_Adoration_of_the_Shepherds_1622-e1640293118745.jpg",
+  //     publishedAt: "2021-12-24T11:46:57Z",
+  //     content:
+  //       "“Why are these Christmas songs so sad?”\r\n" +
+  //       "The question came from a little girl named Hazel. She’d been raised in a different Christian tradition, with drums, guitars, and applause. But that Sunday of … [+4184 chars]",
+  //     ratingNum: 5,
+  //     rating: "right",
+  //   },
+  //   {
+  //     source: { id: null, name: "Vox" },
+  //     author: "Tasha Eichenseher",
+  //     title: "Why more psychiatrists think mindfulness can help treat ADHD",
+  //     description:
+  //       "A 1-minute mindfulness practice helped settle my ADHD-addled mind.",
+  //     url: "https://www.vox.com/22847150/adhd-treatment-mindfulness-adderall",
+  //     urlToImage:
+  //       "https://cdn.vox-cdn.com/thumbor/cEXWhXfN0iLcjvg3xX6sQ3JYM-4=/0x36:1800x978/fit-in/1200x630/cdn.vox-cdn.com/uploads/chorus_asset/file/23123176/mindfulness_adhd_board_2.jpg",
+  //     publishedAt: "2021-12-27T12:35:00Z",
+  //     content:
+  //       "Christina Animashaun/Vox\r\n" +
+  //       "\n" +
+  //       " \n" +
+  //       "\n" +
+  //       "\n" +
+  //       " A 1-minute mindfulness practice helped settle my ADHD-addled mind. \n" +
+  //       "One morning this summer, I sat at my desk feeling restlessness boil inside me. I’d recently moved f… [+11468 chars]",
+  //     ratingNum: 1,
+  //     rating: "left",
+  //   },
+  //   {
+  //     source: {
+  //       id: "the-wall-street-journal",
+  //       name: "The Wall Street Journal",
+  //     },
+  //     author: "Donna Abdulaziz",
+  //     title: "With Rappers, Race Cars and Raves, Saudi Learns How to Party...",
+  //     description:
+  //       "With Rappers, Race Cars and Raves, Saudi Learns How to Party...\r\n" +
+  //       "\n" +
+  //       " \n" +
+  //       " \n" +
+  //       " \n" +
+  //       " (Third column, 11th story, link)\r\n" +
+  //       "\n" +
+  //       " \r\n" +
+  //       "\n" +
+  //       " \r\n" +
+  //       "\n" +
+  //       " \n" +
+  //       " Related stories:Kingdom Seeks to Become Cultural Hub...\r\n" +
+  //       "\n" +
+  //       " \r\n" +
+  //       "\n" +
+  //       " \n" +
+  //       " \n" +
+  //       " Drudge Report Feed needs your support!   Become a Patron",
+  //     url: "https://www.wsj.com/articles/with-rappers-race-cars-and-raves-saudi-arabia-learns-how-to-party-11640610116",
+  //     urlToImage: "https://images.wsj.net/im-458298/social",
+  //     publishedAt: "2021-12-27T13:19:39Z",
+  //     content:
+  //       "RIYADH, Saudi ArabiaThis conservative Islamic kingdom is rapidly trying to ease its staid social norms, allowing women to drive and travel freely in recent years, opening doors to tourists and tolera… [+7332 chars]",
+  //     ratingNum: 3,
+  //     rating: "center",
+  //   },
+  //   {
+  //     source: { id: null, name: "The Center Square" },
+  //     author: "Bruce Walker | The Center Square",
+  //     title:
+  //       "Michigan's Whitmer signs off on $409 million small-business relief program - Iosco County News Herald",
+  //     description:
+  //       "(The Center Square) – The third time was a charm for a small-business relief provision of Senate Bill 85, which was signed Monday by Michigan Gov. Gretchen Whitmer.",
+  //     url: "https://www.thecentersquare.com/michigan/michigans-whitmer-signs-off-on-409-million-small-business-relief-program/article_bc0f4f66-61d4-11ec-bdb5-7b1d3ba90a35.html",
+  //     urlToImage:
+  //       "https://bloximages.chicago2.vip.townnews.com/iosconews.com/content/tncms/assets/v3/editorial/1/51/151e4718-3cf1-5bdf-a761-e37911dad5d3/604697df8250a.image.jpg?crop=1662%2C873%2C0%2C187&resize=1200%2C630&order=crop%2Cresize",
+  //     publishedAt: "2021-12-20T21:44:00Z",
+  //     content:
+  //       "(The Center Square) The third time was a charm for a small-business relief provision of Senate Bill 85, which was signed Monday by Michigan Gov. Gretchen Whitmer.\r\n" +
+  //       "A House version of the bill, House … [+1760 chars]",
+  //     ratingNum: 4,
+  //     rating: "right center",
+  //   },
+  //   {
+  //     source: { id: "the-washington-post", name: "The Washington Post" },
+  //     author: "Ruby Mellen, Siobhán O'Grady, Ezzatullah Mehrdad, Júlia Ledur",
+  //     title: "Unsettled: Searching for home after escaping the Taliban",
+  //     description:
+  //       "From Uganda to Mexico, Afghans who escaped the Taliban are spread across more than three dozen countries, searching for stability and a new place to call home.",
+  //     url: "https://www.washingtonpost.com/world/interactive/2021/afghan-taliban-escape-resettlement/",
+  //     urlToImage:
+  //       "https://www.washingtonpost.com/wp-apps/imrs.php?src=https://arc-anglerfish-washpost-prod-washpost.s3.amazonaws.com/public/RZNFQYSZZEI6ZA4WKVJL55K4HQ.jpg&w=1200",
+  //     publishedAt: "2021-12-27T14:00:28Z",
+  //     content:
+  //       "Her departure from Kabul reminded her of some zombie movie, the young woman said. It was an experience she could describe only as dehumanizing, terrifying and very traumatizing.\r\n" +
+  //       "When she woke up in … [+11555 chars]",
+  //     ratingNum: 2,
+  //     rating: "left center",
+  //   },
+  //   {
+  //     source: { id: null, name: "The Federalist" },
+  //     author: "Christopher Bedford",
+  //     title: "How Advent Teaches Us, Amid Sorrow, To Rejoice",
+  //     description:
+  //       "Today is the last day of Advent. What does the church teach us about sadness and joy? Just consider some of her hymns and scriptures.",
+  //     url: "https://thefederalist.com/2021/12/24/how-advent-teaches-us-amid-sorrow-to-rejoice/",
+  //     urlToImage:
+  //       "https://thefederalist.com/wp-content/uploads/2021/12/Gerard_van_Honthorst_-_Adoration_of_the_Shepherds_1622-e1640293118745.jpg",
+  //     publishedAt: "2021-12-24T11:46:57Z",
+  //     content:
+  //       "“Why are these Christmas songs so sad?”\r\n" +
+  //       "The question came from a little girl named Hazel. She’d been raised in a different Christian tradition, with drums, guitars, and applause. But that Sunday of … [+4184 chars]",
+  //     ratingNum: 5,
+  //     rating: "right",
+  //   },
+  //   {
+  //     source: { id: null, name: "The Federalist" },
+  //     author: "Christopher Bedford",
+  //     title: "How Advent Teaches Us, Amid Sorrow, To Rejoice",
+  //     description:
+  //       "Today is the last day of Advent. What does the church teach us about sadness and joy? Just consider some of her hymns and scriptures.",
+  //     url: "https://thefederalist.com/2021/12/24/how-advent-teaches-us-amid-sorrow-to-rejoice/",
+  //     urlToImage:
+  //       "https://thefederalist.com/wp-content/uploads/2021/12/Gerard_van_Honthorst_-_Adoration_of_the_Shepherds_1622-e1640293118745.jpg",
+  //     publishedAt: "2021-12-24T11:46:57Z",
+  //     content:
+  //       "“Why are these Christmas songs so sad?”\r\n" +
+  //       "The question came from a little girl named Hazel. She’d been raised in a different Christian tradition, with drums, guitars, and applause. But that Sunday of … [+4184 chars]",
+  //     ratingNum: 5,
+  //     rating: "right",
+  //   }
+  // ];
 
-  let arr2 = [
-    {
-      source: { id: null, name: "Vox" },
-      author: "Tasha Eichenseher",
-      title: "Why more psychiatrists think mindfulness can help treat ADHD",
-      description:
-        "A 1-minute mindfulness practice helped settle my ADHD-addled mind.",
-      url: "https://www.vox.com/22847150/adhd-treatment-mindfulness-adderall",
-      urlToImage:
-        "https://cdn.vox-cdn.com/thumbor/cEXWhXfN0iLcjvg3xX6sQ3JYM-4=/0x36:1800x978/fit-in/1200x630/cdn.vox-cdn.com/uploads/chorus_asset/file/23123176/mindfulness_adhd_board_2.jpg",
-      publishedAt: "2021-12-27T12:35:00Z",
-      content:
-        "Christina Animashaun/Vox\r\n" +
-        "\n" +
-        " \n" +
-        "\n" +
-        "\n" +
-        " A 1-minute mindfulness practice helped settle my ADHD-addled mind. \n" +
-        "One morning this summer, I sat at my desk feeling restlessness boil inside me. I’d recently moved f… [+11468 chars]",
-      ratingNum: 1,
-      rating: "left",
-    },
-    {
-      source: {
-        id: "the-wall-street-journal",
-        name: "The Wall Street Journal",
-      },
-      author: "Donna Abdulaziz",
-      title: "With Rappers, Race Cars and Raves, Saudi Learns How to Party...",
-      description:
-        "With Rappers, Race Cars and Raves, Saudi Learns How to Party...\r\n" +
-        "\n" +
-        " \n" +
-        " \n" +
-        " \n" +
-        " (Third column, 11th story, link)\r\n" +
-        "\n" +
-        " \r\n" +
-        "\n" +
-        " \r\n" +
-        "\n" +
-        " \n" +
-        " Related stories:Kingdom Seeks to Become Cultural Hub...\r\n" +
-        "\n" +
-        " \r\n" +
-        "\n" +
-        " \n" +
-        " \n" +
-        " Drudge Report Feed needs your support!   Become a Patron",
-      url: "https://www.wsj.com/articles/with-rappers-race-cars-and-raves-saudi-arabia-learns-how-to-party-11640610116",
-      urlToImage: "https://images.wsj.net/im-458298/social",
-      publishedAt: "2021-12-27T13:19:39Z",
-      content:
-        "RIYADH, Saudi ArabiaThis conservative Islamic kingdom is rapidly trying to ease its staid social norms, allowing women to drive and travel freely in recent years, opening doors to tourists and tolera… [+7332 chars]",
-      ratingNum: 3,
-      rating: "center",
-    },
-    {
-      source: { id: null, name: "The Center Square" },
-      author: "Bruce Walker | The Center Square",
-      title:
-        "Michigan's Whitmer signs off on $409 million small-business relief program - Iosco County News Herald",
-      description:
-        "(The Center Square) – The third time was a charm for a small-business relief provision of Senate Bill 85, which was signed Monday by Michigan Gov. Gretchen Whitmer.",
-      url: "https://www.thecentersquare.com/michigan/michigans-whitmer-signs-off-on-409-million-small-business-relief-program/article_bc0f4f66-61d4-11ec-bdb5-7b1d3ba90a35.html",
-      urlToImage:
-        "https://bloximages.chicago2.vip.townnews.com/iosconews.com/content/tncms/assets/v3/editorial/1/51/151e4718-3cf1-5bdf-a761-e37911dad5d3/604697df8250a.image.jpg?crop=1662%2C873%2C0%2C187&resize=1200%2C630&order=crop%2Cresize",
-      publishedAt: "2021-12-20T21:44:00Z",
-      content:
-        "(The Center Square) The third time was a charm for a small-business relief provision of Senate Bill 85, which was signed Monday by Michigan Gov. Gretchen Whitmer.\r\n" +
-        "A House version of the bill, House … [+1760 chars]",
-      ratingNum: 4,
-      rating: "right center",
-    },
-    {
-      source: { id: "the-washington-post", name: "The Washington Post" },
-      author: "Ruby Mellen, Siobhán O'Grady, Ezzatullah Mehrdad, Júlia Ledur",
-      title: "Unsettled: Searching for home after escaping the Taliban",
-      description:
-        "From Uganda to Mexico, Afghans who escaped the Taliban are spread across more than three dozen countries, searching for stability and a new place to call home.",
-      url: "https://www.washingtonpost.com/world/interactive/2021/afghan-taliban-escape-resettlement/",
-      urlToImage:
-        "https://www.washingtonpost.com/wp-apps/imrs.php?src=https://arc-anglerfish-washpost-prod-washpost.s3.amazonaws.com/public/RZNFQYSZZEI6ZA4WKVJL55K4HQ.jpg&w=1200",
-      publishedAt: "2021-12-27T14:00:28Z",
-      content:
-        "Her departure from Kabul reminded her of some zombie movie, the young woman said. It was an experience she could describe only as dehumanizing, terrifying and very traumatizing.\r\n" +
-        "When she woke up in … [+11555 chars]",
-      ratingNum: 2,
-      rating: "left center",
-    },
-    {
-      source: { id: null, name: "The Federalist" },
-      author: "Christopher Bedford",
-      title: "How Advent Teaches Us, Amid Sorrow, To Rejoice",
-      description:
-        "Today is the last day of Advent. What does the church teach us about sadness and joy? Just consider some of her hymns and scriptures.",
-      url: "https://thefederalist.com/2021/12/24/how-advent-teaches-us-amid-sorrow-to-rejoice/",
-      urlToImage:
-        "https://thefederalist.com/wp-content/uploads/2021/12/Gerard_van_Honthorst_-_Adoration_of_the_Shepherds_1622-e1640293118745.jpg",
-      publishedAt: "2021-12-24T11:46:57Z",
-      content:
-        "“Why are these Christmas songs so sad?”\r\n" +
-        "The question came from a little girl named Hazel. She’d been raised in a different Christian tradition, with drums, guitars, and applause. But that Sunday of … [+4184 chars]",
-      ratingNum: 5,
-      rating: "right",
-    },
-    {
-      source: { id: null, name: "The Federalist" },
-      author: "Christopher Bedford",
-      title: "How Advent Teaches Us, Amid Sorrow, To Rejoice",
-      description:
-        "Today is the last day of Advent. What does the church teach us about sadness and joy? Just consider some of her hymns and scriptures.",
-      url: "https://thefederalist.com/2021/12/24/how-advent-teaches-us-amid-sorrow-to-rejoice/",
-      urlToImage:
-        "https://thefederalist.com/wp-content/uploads/2021/12/Gerard_van_Honthorst_-_Adoration_of_the_Shepherds_1622-e1640293118745.jpg",
-      publishedAt: "2021-12-24T11:46:57Z",
-      content:
-        "“Why are these Christmas songs so sad?”\r\n" +
-        "The question came from a little girl named Hazel. She’d been raised in a different Christian tradition, with drums, guitars, and applause. But that Sunday of … [+4184 chars]",
-      ratingNum: 5,
-      rating: "right",
-    },
-  ];
+  // let arr2 = [
+  //   {
+  //     source: { id: null, name: "Vox" },
+  //     author: "Tasha Eichenseher",
+  //     title: "Why more psychiatrists think mindfulness can help treat ADHD",
+  //     description:
+  //       "A 1-minute mindfulness practice helped settle my ADHD-addled mind.",
+  //     url: "https://www.vox.com/22847150/adhd-treatment-mindfulness-adderall",
+  //     urlToImage:
+  //       "https://cdn.vox-cdn.com/thumbor/cEXWhXfN0iLcjvg3xX6sQ3JYM-4=/0x36:1800x978/fit-in/1200x630/cdn.vox-cdn.com/uploads/chorus_asset/file/23123176/mindfulness_adhd_board_2.jpg",
+  //     publishedAt: "2021-12-27T12:35:00Z",
+  //     content:
+  //       "Christina Animashaun/Vox\r\n" +
+  //       "\n" +
+  //       " \n" +
+  //       "\n" +
+  //       "\n" +
+  //       " A 1-minute mindfulness practice helped settle my ADHD-addled mind. \n" +
+  //       "One morning this summer, I sat at my desk feeling restlessness boil inside me. I’d recently moved f… [+11468 chars]",
+  //     ratingNum: 1,
+  //     rating: "left",
+  //   },
+  //   {
+  //     source: {
+  //       id: "the-wall-street-journal",
+  //       name: "The Wall Street Journal",
+  //     },
+  //     author: "Donna Abdulaziz",
+  //     title: "With Rappers, Race Cars and Raves, Saudi Learns How to Party...",
+  //     description:
+  //       "With Rappers, Race Cars and Raves, Saudi Learns How to Party...\r\n" +
+  //       "\n" +
+  //       " \n" +
+  //       " \n" +
+  //       " \n" +
+  //       " (Third column, 11th story, link)\r\n" +
+  //       "\n" +
+  //       " \r\n" +
+  //       "\n" +
+  //       " \r\n" +
+  //       "\n" +
+  //       " \n" +
+  //       " Related stories:Kingdom Seeks to Become Cultural Hub...\r\n" +
+  //       "\n" +
+  //       " \r\n" +
+  //       "\n" +
+  //       " \n" +
+  //       " \n" +
+  //       " Drudge Report Feed needs your support!   Become a Patron",
+  //     url: "https://www.wsj.com/articles/with-rappers-race-cars-and-raves-saudi-arabia-learns-how-to-party-11640610116",
+  //     urlToImage: "https://images.wsj.net/im-458298/social",
+  //     publishedAt: "2021-12-27T13:19:39Z",
+  //     content:
+  //       "RIYADH, Saudi ArabiaThis conservative Islamic kingdom is rapidly trying to ease its staid social norms, allowing women to drive and travel freely in recent years, opening doors to tourists and tolera… [+7332 chars]",
+  //     ratingNum: 3,
+  //     rating: "center",
+  //   },
+  //   {
+  //     source: { id: null, name: "The Center Square" },
+  //     author: "Bruce Walker | The Center Square",
+  //     title:
+  //       "Michigan's Whitmer signs off on $409 million small-business relief program - Iosco County News Herald",
+  //     description:
+  //       "(The Center Square) – The third time was a charm for a small-business relief provision of Senate Bill 85, which was signed Monday by Michigan Gov. Gretchen Whitmer.",
+  //     url: "https://www.thecentersquare.com/michigan/michigans-whitmer-signs-off-on-409-million-small-business-relief-program/article_bc0f4f66-61d4-11ec-bdb5-7b1d3ba90a35.html",
+  //     urlToImage:
+  //       "https://bloximages.chicago2.vip.townnews.com/iosconews.com/content/tncms/assets/v3/editorial/1/51/151e4718-3cf1-5bdf-a761-e37911dad5d3/604697df8250a.image.jpg?crop=1662%2C873%2C0%2C187&resize=1200%2C630&order=crop%2Cresize",
+  //     publishedAt: "2021-12-20T21:44:00Z",
+  //     content:
+  //       "(The Center Square) The third time was a charm for a small-business relief provision of Senate Bill 85, which was signed Monday by Michigan Gov. Gretchen Whitmer.\r\n" +
+  //       "A House version of the bill, House … [+1760 chars]",
+  //     ratingNum: 4,
+  //     rating: "right center",
+  //   },
+  //   {
+  //     source: { id: "the-washington-post", name: "The Washington Post" },
+  //     author: "Ruby Mellen, Siobhán O'Grady, Ezzatullah Mehrdad, Júlia Ledur",
+  //     title: "Unsettled: Searching for home after escaping the Taliban",
+  //     description:
+  //       "From Uganda to Mexico, Afghans who escaped the Taliban are spread across more than three dozen countries, searching for stability and a new place to call home.",
+  //     url: "https://www.washingtonpost.com/world/interactive/2021/afghan-taliban-escape-resettlement/",
+  //     urlToImage:
+  //       "https://www.washingtonpost.com/wp-apps/imrs.php?src=https://arc-anglerfish-washpost-prod-washpost.s3.amazonaws.com/public/RZNFQYSZZEI6ZA4WKVJL55K4HQ.jpg&w=1200",
+  //     publishedAt: "2021-12-27T14:00:28Z",
+  //     content:
+  //       "Her departure from Kabul reminded her of some zombie movie, the young woman said. It was an experience she could describe only as dehumanizing, terrifying and very traumatizing.\r\n" +
+  //       "When she woke up in … [+11555 chars]",
+  //     ratingNum: 2,
+  //     rating: "left center",
+  //   },
+  //   {
+  //     source: { id: null, name: "The Federalist" },
+  //     author: "Christopher Bedford",
+  //     title: "How Advent Teaches Us, Amid Sorrow, To Rejoice",
+  //     description:
+  //       "Today is the last day of Advent. What does the church teach us about sadness and joy? Just consider some of her hymns and scriptures.",
+  //     url: "https://thefederalist.com/2021/12/24/how-advent-teaches-us-amid-sorrow-to-rejoice/",
+  //     urlToImage:
+  //       "https://thefederalist.com/wp-content/uploads/2021/12/Gerard_van_Honthorst_-_Adoration_of_the_Shepherds_1622-e1640293118745.jpg",
+  //     publishedAt: "2021-12-24T11:46:57Z",
+  //     content:
+  //       "“Why are these Christmas songs so sad?”\r\n" +
+  //       "The question came from a little girl named Hazel. She’d been raised in a different Christian tradition, with drums, guitars, and applause. But that Sunday of … [+4184 chars]",
+  //     ratingNum: 5,
+  //     rating: "right",
+  //   },
+  //   {
+  //     source: { id: null, name: "The Federalist" },
+  //     author: "Christopher Bedford",
+  //     title: "How Advent Teaches Us, Amid Sorrow, To Rejoice",
+  //     description:
+  //       "Today is the last day of Advent. What does the church teach us about sadness and joy? Just consider some of her hymns and scriptures.",
+  //     url: "https://thefederalist.com/2021/12/24/how-advent-teaches-us-amid-sorrow-to-rejoice/",
+  //     urlToImage:
+  //       "https://thefederalist.com/wp-content/uploads/2021/12/Gerard_van_Honthorst_-_Adoration_of_the_Shepherds_1622-e1640293118745.jpg",
+  //     publishedAt: "2021-12-24T11:46:57Z",
+  //     content:
+  //       "“Why are these Christmas songs so sad?”\r\n" +
+  //       "The question came from a little girl named Hazel. She’d been raised in a different Christian tradition, with drums, guitars, and applause. But that Sunday of … [+4184 chars]",
+  //     ratingNum: 5,
+  //     rating: "right",
+  //   },
+  // ];
 
-  res.status(200).send({recommended: arr1, other: arr2});
+  // res.status(200).send({recommended: arr1, other: arr2});
 
 
 

@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { GlobalContext } from "../GlobalState";
 import axios from "axios";
 
 import './styling/myNews.css'
@@ -29,7 +30,9 @@ const MyNews = () => {
   const [searchState, setSearchState] = useState(null);
   const [headlineState, setHeadlineState] = useState(null);
 
+  const context = useContext(GlobalContext)
 
+  console.log(context.state.category)
 
   useEffect(() => {
     const getNewsAPI = async () => {
@@ -38,9 +41,9 @@ const MyNews = () => {
         // setSearchState(response.data);
 
         const response = await axios.get(
-          `http://localhost:5050/api/my-news/${sessionStorage.getItem(
+          `http://localhost:5050/api/my-news/?userId=${sessionStorage.getItem(
             "userId"
-          )}`
+          )}&category=${context.state.category}`
         );
 
         setHeadlineState(response.data);
