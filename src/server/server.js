@@ -86,7 +86,7 @@ app.post("/api/postUserSource", async (req, res) => {
 app.get("/api/my-news/:userId", async (req, res) => {
 
 
-  //   let userId = req.params.userId;
+    let userId = req.params.userId;
 
   //   let query;
 
