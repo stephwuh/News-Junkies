@@ -10,6 +10,7 @@ import Link from "@mui/material/Link";
 import Checkbox from "@mui/material/Checkbox";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import Box   from "@mui/material/Box";
 
 import { TitleLink, Source } from "./styling/muiStyling.js";
 
@@ -46,44 +47,42 @@ export default function NewsCardShort(props) {
       break;
   }
 
-  // console.log(props.source.image["thumbnail"]["contentUrl"])
-
   return (
     <CardCustom>
-      {/* {props.source.image.contentUrl && (
-        <CardMedia
-          component="img"
-          height="140"  
-          image={props.source.image.contentUrl}
-          alt="article image"
-        />
-      )} */}
-
-      <CardContent sx={{ pb: 0, textAlign: "center" }}>
-        <TitleLink href={props.source.url} target="_blank" rel="noopener">
-          <h5 className="news-card-title">
-            {props.source.name ? props.source.name : "No Title"}
-          </h5>
-        </TitleLink>
-          {/* {!props.source.image.contentUrl && (
-            <Typography
-              sx={{ color: "primary.main", fontSize: 12, fontWeight: "bold" }}
-            >
-              {props.source.description}
-            </Typography>
-          )} */}
-        <Source>
-          {props.source.provider[0].name}
-          <img
-            src={imageSrc}
-            alt="bias image"
-            height="12"
-            width="72"
-            style={{ marginLeft: "7px" }}
+      {props.source.image && (
+        <>
+          <CardMedia
+            component="img"
+            height="140"
+            image={props.source.image.contentUrl}
+            alt="article image"
           />
-        </Source>
-      </CardContent>
-      <CardActions sx={{ display: "flex", justifyContent: "center" }}>
+          <CardContent
+            sx={
+
+            { pb: 0, textAlign: "center" }
+            }
+          >
+            <Box>
+            <TitleLink href={props.source.url} target="_blank" rel="noopener">
+              <h5 className="news-card-title">
+                {props.source.name ? props.source.name : "No Title"}
+              </h5>
+            </TitleLink>
+            </Box>
+          
+            <Source>
+              {props.source.provider[0].name}
+              <img
+                src={imageSrc}
+                alt="bias image"
+                height="12"
+                width="72"
+                style={{ marginLeft: "7px" }}
+              />
+            </Source>
+          </CardContent>
+          <CardActions sx={{ display: "flex", justifyContent: "center", p: 0}}>
         <FormGroup>
           <FormControlLabel
             control={
@@ -93,6 +92,65 @@ export default function NewsCardShort(props) {
           />
         </FormGroup>
       </CardActions>
+        </>
+      )}
+
+      {!props.source.image && (
+        <>
+          <CardContent
+            sx={
+            
+              { pb: 0, height: "85%", textAlign:'center' }
+ 
+            }
+          >
+            <Box sx={{height: "33%", display: 'flex', alignItems: "center"}}>
+              <TitleLink href={props.source.url} target="_blank" rel="noopener">
+                <h5 className="news-card-title">
+                  {props.source.name ? props.source.name : "No Title"}
+                </h5>
+              </TitleLink>
+            </Box>
+            <Box sx={{ height: "61%", display: 'flex', alignItems: "center"}}>
+                <Typography
+                  sx={{
+                    color: "primary.main",
+                    fontSize: 12,
+                    fontWeight: "bold",
+                    marginTop: "5px",
+                    marginBottom: "5px",
+                   
+                  }}
+                >
+                  {props.source.description}
+                </Typography>
+               
+              </Box>
+              <Source sx={{height: '10%'}}>
+              {props.source.provider[0].name}
+              <img
+                src={imageSrc}
+                alt="bias image"
+                height="12"
+                width="72"
+                style={{ marginLeft: "7px" }}
+              />
+            </Source>
+          </CardContent>
+          <CardActions sx={{ display: "flex", justifyContent: "center", p: 0, mt: "8px"}}>
+        <FormGroup>
+          <FormControlLabel
+            control={
+              <Checkbox onChange={props.onChange} checked={props.checked} />
+            }
+            label="Article Read"
+          />
+        </FormGroup>
+      </CardActions>
+        </>
+      )}
+
+     
     </CardCustom>
   );
 }

@@ -7,7 +7,8 @@ import Box from "@mui/material/Box";
 const TitleLink = styled(Link)({
 
     color: "black", 
-    textDecoration: "none"
+    textDecoration: "none",
+
 
 })
 

@@ -3,7 +3,7 @@ import React, {createContext, useReducer} from 'react';
 import { categoryReducer } from './categoryReducer.js';
 
 const initialState = {
-    category: "latest"
+    category: ""
 }
 
 export const GlobalContext = createContext(initialState) 

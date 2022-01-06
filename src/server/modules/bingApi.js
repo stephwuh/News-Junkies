@@ -1,12 +1,12 @@
 const axios = require("axios");
 
 module.exports = {
-  search: async function (searchTerm,numOfArticles) {
+  search: async function (searchTerm, numOfArticles, category) {
     const options = {
       method: "GET",
       url: "https://bing-news-search1.p.rapidapi.com/news/search",
       params: {
-        q: searchTerm,
+        q: `${searchTerm} ${category}`,
         count: numOfArticles,
         originalImg: 'true',
         freshness: "Day",

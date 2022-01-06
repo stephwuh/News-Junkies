@@ -34,6 +34,8 @@ const MyNews = () => {
 
   console.log(context.state.category)
 
+
+
   useEffect(() => {
     const getNewsAPI = async () => {
       try {
@@ -53,7 +55,7 @@ const MyNews = () => {
     };
 
     getNewsAPI();
-  }, []);
+  }, [context.state.category]);
 
   if (!headlineState) return <div>loading</div>;
 
@@ -69,7 +71,7 @@ const MyNews = () => {
 
         
         <Box>
-          {/* <Typogr aphy variant="h6">Recommended news</Typogr> */}
+          {/* <Typography variant="h6">Recommended news</Typography> */}
           <Box sx={{display: "flex", flexWrap: "wrap", justifyContent: "space-between"}}>
             {headlineState.recommended.map((source, index) => {
               return (

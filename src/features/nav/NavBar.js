@@ -20,6 +20,7 @@ const NavBar = () => {
     let navigate = useNavigate();
 
     const open = Boolean(anchorEl);
+
     const handleClick = (event) => {
       setAnchorEl(event.currentTarget);
     };
@@ -27,7 +28,7 @@ const NavBar = () => {
     const handleClose = (event) => {
       setAnchorEl(false);
       dispatch({type: "update category", payload: event.target.getAttribute('id') })
-      navigate('/my-news');
+      // navigate('/my-news');
       
     };
 
@@ -56,7 +57,7 @@ const NavBar = () => {
                 open={open}
                 onClose={handleClose}
             > 
-            <MenuItem id="latest" onClick={handleClose}>Latest</MenuItem>
+            <MenuItem id="" onClick={handleClose}>Latest</MenuItem>
             <MenuItem id="business" onClick={handleClose}>Business</MenuItem>
             <MenuItem id="politics" onClick={handleClose}>Politics</MenuItem>
             <MenuItem id="health" onClick={handleClose}>Health</MenuItem>
